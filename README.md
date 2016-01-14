@@ -34,7 +34,7 @@ function App(){
       location => // via rackt/history
         <Homepage/>
     }<Route>
-    {/* or pass a component */}
+
     <Route match='/products/:id'>{
       (location, params) =>
         <Product id={location.params.id} />
