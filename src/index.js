@@ -98,12 +98,16 @@ export class Route extends Component{
     }
 
     this.disposeBefore = this.context.routah.history.listenBefore((location, callback) => {
-      if (!this.props.path || matches(this.props.path,  h.createHref(location))){
+      let matchesCurrent = !this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)));
+      let matchesNext = !this.props.path || matches(this.props.path,  h.createHref(location));
+      if (!matchesCurrent && matchesNext){
         return this.props.onEnter(location, callback);
       }
-      else {
+      if (matchesCurrent && !matchesNext){
         return this.props.onLeave(location, callback);
       }
+
+      return callback();
     });
 
     this.disposeUnload = this.context.routah.history.listenBeforeUnload(() => {
