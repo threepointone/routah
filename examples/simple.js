@@ -28,7 +28,7 @@ class User extends Component{
         let dest1 = Math.round(Math.random()*1000);
         return <div>
           you're at {location.pathname} <br/>
-          <Route match='/secret'>{
+          <Route path='/secret'>{
             () => <div>matched!</div>
           }</Route>
           <Link to={`/${dest1}`}>/{dest1}</Link> <br/>

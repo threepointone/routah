@@ -55,8 +55,8 @@ export class Route extends Component{
   componentWillMount(){
     this.dispose = this.context.routah.history.listen(location => {
       let doesMatch = true, match;
-      if(this.props.match){
-        match = matches(this.props.match, this.context.routah.history.createHref(location));
+      if(this.props.path){
+        match = matches(this.props.path, this.context.routah.history.createHref(location));
         doesMatch = !!match;
       }
 

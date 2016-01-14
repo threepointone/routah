@@ -30,12 +30,12 @@ const history = require('history').createHistory();
 function App(){
   return <div>
     {/* use a render callback */}
-    <Route match='/'>{
+    <Route path='/'>{
       location => // via rackt/history
         <Homepage/>
     }<Route>
     {/* or pass a component */}
-    <Route match='/products/:id' component={Product} />
+    <Route path={['/products/:id', '/byId/:id']} component={Product} />
     {/* link to urls / location objects */}
     <Link to={...}>elsewhere</Link>
   </div>;
