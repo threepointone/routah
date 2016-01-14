@@ -1,7 +1,7 @@
 routah
 ---
 
-yet another router, via react + history + route-parser
+yet another router, via react + history + path-to-regexp
 
 tl;dr - routes anywhere in your react component tree
 

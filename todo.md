@@ -1,5 +1,3 @@
-
-- change to path-to-regexp for matching
 - overwrite context.routah for a subtree (and handle redirects on said tree)
 - handle multiple redirects on the same render tree
 
@@ -9,8 +7,9 @@
 ✓ - server side rendering
 ✓ - dynamic routing - require.ensure should just work
 ✓ - redux-simple-router - it just works!
-✓ - activeClass / activeStyle - to test
+✓ - activeClass / activeStyle
 ✓ - default browser history object
+✓ - path-to-regexp for matching
 ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
 ~ animations between urls - use hooks
 ~ - scroll states - rackt/scroll-behavior, after historv2 compat

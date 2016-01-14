@@ -5,7 +5,10 @@ if (typeof window !== 'undefined'){
   window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
 }
 
-import Matcher from 'route-parser';
+// import Matcher from 'route-parser';
+import pathToRegexp from 'path-to-regexp';
+
+const has = {}.hasOwnProperty;
 
 // a helper to get the current location from the history object
 function currentLocation(h){
@@ -14,15 +17,53 @@ function currentLocation(h){
   return loc;
 }
 
+function decode_param(val) {
+  if (typeof val !== 'string' || val.length === 0) {
+    return val;
+  }
+
+  try {
+    return decodeURIComponent(val);
+  } catch (err) {
+    if (err instanceof URIError) {
+      err.message = 'Failed to decode param \'' + val + '\'';
+      err.status = err.statusCode = 400;
+    }
+
+    throw err;
+  }
+}
+
+
+
 // pattern matching for urls
+function pathMatch(pattern, path){
+  let keys = [], params = {}, _path,
+    regexp = pathToRegexp(pattern, keys), m = regexp.exec(path);
+  if (!m){
+    return false;
+  }
+  _path = m[0];
+
+  for (var i = 1; i < m.length; i++) {
+    var key = keys[i - 1];
+    var prop = key.name;
+    var val = decode_param(m[i]);
+
+    if (val !== undefined || !(params::has(prop))) {
+      params[prop] = val;
+    }
+  }
+  return params;
+
+}
 function matches(patterns, url){
   if (!Array.isArray(patterns)){
     patterns = [patterns];
   }
 
   for (let pattern of patterns){
-    var matcher = new Matcher(pattern);
-    let res = matcher.match(url);
+    let res = pathMatch(pattern, url);
     if (res){
       return res;
     }
@@ -80,10 +121,10 @@ export class Route extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
-  refresh = location => {
+  refresh = (location = currentLocation(this.context.routah.history), props = this.props) => {
     let doesMatch = true, match;
-    if (this.props.path){
-      match = matches(this.props.path, this.context.routah.history.createHref(location));
+    if (props.path){
+      match = matches(props.path, this.context.routah.history.createHref(location));
       doesMatch = !!match;
     }
 
@@ -125,7 +166,8 @@ export class Route extends Component{
   }
   componentWillReceiveProps(next){
     if (next.path !== this.props.path){
-      this.refresh(currentLocation(this.context.routah.history));
+      // todo - fire onenter/onleave hooks here too?
+      this.refresh(undefined, next);
     }
   }
   render(){

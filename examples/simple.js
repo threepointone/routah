@@ -13,6 +13,9 @@ class App extends Component{
         let dest1 = Math.round(Math.random() * 1000);
         return <div>
           you're at {location.pathname} <br/>
+          <Route path={location.pathname}>{
+            loc => <span>inside</span>
+          }</Route>
           <Route path='/secret' onEnter={(l, cb) => console.log('enter', l.pathname) || cb() } onLeave={(l, cb) => console.log('leave', l.pathname) || cb()} onUnload={() => 'are you sure'}>{
             () => <div>matched!</div>
           }</Route>

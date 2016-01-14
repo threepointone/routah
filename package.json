@@ -20,6 +20,6 @@
     "history": "^2.0.0-rc2"
   },
   "dependencies": {
-    "route-parser": "0.0.4"
+    "path-to-regexp": "^1.2.1"
   }
 }
