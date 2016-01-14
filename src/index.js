@@ -10,14 +10,14 @@ function currentLocation(h){
 
 // pattern matching for urls
 function matches(patterns, url){
-  if(!Array.isArray(patterns)){
+  if (!Array.isArray(patterns)){
     patterns = [patterns];
   }
 
-  for(let pattern of patterns){
+  for (let pattern of patterns){
     var matcher = new Matcher(pattern);
-    let res = matcher.match(url)
-    if(res){
+    let res = matcher.match(url);
+    if (res){
       return res;
     }
   }
@@ -45,7 +45,7 @@ export class Router extends Component{
       routah: {
         history: this.props.history
       }
-    }
+    };
   }
   render(){
     return this.props.children;
@@ -68,14 +68,15 @@ export class Route extends Component{
     props: {},
     onMount: () => {},
     onEnter: (l, cb) => cb(),
-    onLeave: (l, cb) => cb()
+    onLeave: (l, cb) => cb(),
+    onUnload: () => {}
   };
   static contextTypes = {
     routah: PropTypes.object
   };
   refresh = location => {
     let doesMatch = true, match;
-    if(this.props.path){
+    if (this.props.path){
       match = matches(this.props.path, this.context.routah.history.createHref(location));
       doesMatch = !!match;
     }
@@ -86,33 +87,41 @@ export class Route extends Component{
         params: match || {}
       },
       matches: doesMatch
-    })
+    });
   };
   componentWillMount(){
     let h = this.context.routah.history;
-    this.dispose1 = this.context.routah.history.listen(this.refresh);
+    this.dispose = this.context.routah.history.listen(this.refresh);
 
-    if(!this.props.path || !matches(this.props.path,  h.createHref(currentLocation(h)))){
+    if (!this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)))){
       this.props.onMount(currentLocation(h));
     }
 
-    this.dispose2 = this.context.routah.history.listenBefore((location, callback) => {
-      if(!this.props.path || !matches(this.props.path,  h.createHref(location))){
+    this.disposeBefore = this.context.routah.history.listenBefore((location, callback) => {
+      if (!this.props.path || matches(this.props.path,  h.createHref(location))){
         return this.props.onEnter(location, callback);
       }
-      else this.props.onLeave(location, callback);
+      else {
+        return this.props.onLeave(location, callback);
+      }
+    });
+
+    this.disposeUnload = this.context.routah.history.listenBeforeUnload(() => {
+      if (!this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)))){
+        return this.props.onUnload(currentLocation(h));
+      }
     });
 
   }
   componentWillReceiveProps(next){
-    if(next.path !== this.props.path){
+    if (next.path !== this.props.path){
       this.refresh(currentLocation(this.context.routah.history));
     }
   }
   render(){
     let {location} = this.state;
-    if(this.state.matches){
-      if(this.props.component){
+    if (this.state.matches){
+      if (this.props.component){
         return React.createElement(this.props.component, {location, ...this.props.props});
       }
       return this.props.children(location);
@@ -120,10 +129,12 @@ export class Route extends Component{
     return this.props.notFound(location);
   }
   componentWillUnmount(){
-    this.dispose1();
-    delete this.dispose1;
-    this.dispose2();
-    delete this.dispose2;
+    this.dispose();
+    this.disposeBefore();
+    this.disposeUnload();
+    delete this.dispose;
+    delete this.disposeBefore;
+    delete this.disposeUnload;
   }
 }
 
@@ -175,6 +186,6 @@ export class Redirect extends Component{
     this.context.routah.history.push(this.props.to);
   }
   render(){
-    return <noscript/>
+    return <noscript/>;
   }
 }

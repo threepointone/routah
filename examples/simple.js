@@ -1,14 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import {render} from 'react-dom';
 import {Router, Link, Route, Redirect} from '../src';
-import {createHistory} from 'history';
+import {createHistory, useBeforeUnload} from 'history';
 
 function log(...args){
   console.log(...args, this);
   return this;
 }
 
-let h = createHistory();
+let h = useBeforeUnload(createHistory)();
 
 class App extends Component{
   render(){
@@ -26,10 +26,10 @@ class User extends Component{
   render(){
     return <Route>{
       location => {
-        let dest1 = Math.round(Math.random()*1000);
+        let dest1 = Math.round(Math.random() * 1000);
         return <div>
           you're at {location.pathname} <br/>
-          <Route path='/secret'>{
+          <Route path='/secret' onUnload={() => 'are you sure'}>{
             () => <div>matched!</div>
           }</Route>
           <Link to={`/${dest1}`}>/{dest1}</Link> <br/>
