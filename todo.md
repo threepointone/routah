@@ -1,3 +1,5 @@
+
+
 - transitions / leave / enter
 - animations between urls
 - onBeforeUnload / routerWillLeave
@@ -5,6 +7,8 @@
 - change to path-to-regexp for matching
 - be able to overwrite context.routah for a subtree
 - handle multiple redirects on the same render tree
+
+- testsssss
 
 ✓ - server side rendering
 ✓ - dynamic routing - require.ensure should just work

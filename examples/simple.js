@@ -28,11 +28,10 @@ class User extends Component{
       location => {
         let dest1 = Math.round(Math.random()*1000);
         return <div>
-          you're at {location::log().pathname} <br/>
+          you're at {location.pathname} <br/>
           <Route path='/secret'>{
             () => <div>matched!</div>
           }</Route>
-          {location.pathname === '/secret' ? <Redirect to={`/${dest1}`}/> : null}
           <Link to={`/${dest1}`}>/{dest1}</Link> <br/>
           or else <span onClick={() => h.push(`/secret`)}>secret</span>
         </div>;
@@ -40,8 +39,6 @@ class User extends Component{
     }</Route>;
   }
 }
-
-// console.log(h);
 
 
 render(<App/>, document.getElementById('app'));

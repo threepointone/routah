@@ -1,12 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import Matcher from 'route-parser';
 
+// a helper to get the current location from the history object
 function currentLocation(h){
   let loc;
   h.listen(location => loc = location)();
   return loc;
 }
 
+// pattern matching for urls
 function matches(patterns, url){
   if(!Array.isArray(patterns)){
     patterns = [patterns];
@@ -23,6 +25,11 @@ function matches(patterns, url){
 }
 
 
+// top level component. pass in a history object.
+// <Router history={history}>
+//   <App/>
+// </Router>
+// todo - use a default history singleton in browser
 export class Router extends Component{
   state = {
     location: null
@@ -52,31 +59,55 @@ export class Route extends Component{
     match: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     component: PropTypes.func,
     notFound: PropTypes.func,
-    props: PropTypes.object
+    props: PropTypes.object,
+    onLeave: PropTypes.func,
+    onEnter: PropTypes.func
   };
   static defaultProps = {
     notFound: () => <noscript/>,
-    props: {}
+    props: {},
+    onMount: () => {},
+    onEnter: (l, cb) => cb(),
+    onLeave: (l, cb) => cb()
   };
   static contextTypes = {
     routah: PropTypes.object
   };
-  componentWillMount(){
-    this.dispose = this.context.routah.history.listen(location => {
-      let doesMatch = true, match;
-      if(this.props.path){
-        match = matches(this.props.path, this.context.routah.history.createHref(location));
-        doesMatch = !!match;
-      }
+  refresh = location => {
+    let doesMatch = true, match;
+    if(this.props.path){
+      match = matches(this.props.path, this.context.routah.history.createHref(location));
+      doesMatch = !!match;
+    }
 
-      this.setState({
-        location: {
-          ...location,
-          params: match || {}
-        },
-        matches: doesMatch
-      })
+    this.setState({
+      location: {
+        ...location,
+        params: match || {}
+      },
+      matches: doesMatch
+    })
+  };
+  componentWillMount(){
+    let h = this.context.routah.history;
+    this.dispose1 = this.context.routah.history.listen(this.refresh);
+
+    if(!this.props.path || !matches(this.props.path,  h.createHref(currentLocation(h)))){
+      this.props.onMount(currentLocation(h));
+    }
+
+    this.dispose2 = this.context.routah.history.listenBefore((location, callback) => {
+      if(!this.props.path || !matches(this.props.path,  h.createHref(location))){
+        return this.props.onEnter(location, callback);
+      }
+      else this.props.onLeave(location, callback);
     });
+
+  }
+  componentWillReceiveProps(next){
+    if(next.path !== this.props.path){
+      this.refresh(currentLocation(this.context.routah.history));
+    }
   }
   render(){
     let {location} = this.state;
@@ -89,8 +120,10 @@ export class Route extends Component{
     return this.props.notFound(location);
   }
   componentWillUnmount(){
-    this.dispose();
-    delete this.dispose();
+    this.dispose1();
+    delete this.dispose1;
+    this.dispose2();
+    delete this.dispose2;
   }
 }
 
