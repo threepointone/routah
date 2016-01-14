@@ -1,9 +1,14 @@
 routah
 ---
 
-yet another router, via react + history + path-to-regexp
+`npm install react history@2.0.0-rc2 routah --save`
 
-tl;dr - routes anywhere in your react component tree
+- heavily inspired by [react-router](https://github.com/rackt/react-router) and [react-motion](https://github.com/chenglou/react-motion)
+- nest `<Route />` elements anywhere in your app
+- [express](http://expressjs.com/)-style pattern matching
+- [redux-simple-router](https://www.npmjs.com/package/redux-simple-router) compatible
+- server-side friendly
+- more!
 
 [work in progress]
 
@@ -48,29 +53,29 @@ render(<Router> // or you could pass in a custom rackt/history object
 Router
 ---
 
-Render a `<Router>` element in your react app to start the router
+Wrap your application in a `<Router>` element to start the router
 
-- history - (optional) history object via [rackt/history]
+- `history` - (optional) [history](https://github.com/rackt/history) object
 
 Route
 ---
 
 A `<Route path={...}>` element renders only when the current url matches the `path` expression.
 
-- path - _string_ -  an [express-style](https://github.com/pillarjs/path-to-regexp) path matcher
-- path - _array_ - an array of the above
+- `path` - an [express-style](https://github.com/pillarjs/path-to-regexp) path matcher
+- `path` - an array of the above
 
-- children - _function_ - (location, history) - [a render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)
-OR
-- component (_React.Component_) + props (_object_) which will also receive *{location, history}*
+- `children (location, history)` - a [render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)
 
-- hooks - _function_
-  - onMount(location)
-  - onEnter(location, callback)
-  - onLeave(location, callback)
-  - onUnload(location)
+- `component` - a `React.Component` which will receive *{location, history}* as props
+- `props` - additional props to transfer when using `component`
 
-- notFound - _function_  - a render-callback when path doesn't match. defaults to `() => <noscript/>`
+- `onMount (location)`
+- `onEnter (location, callback)`
+- `onLeave (location, callback)`
+- `onUnload (location)`
+
+- `notFound ()`  - a render-callback when `path` doesn't match. defaults to `() => <noscript/>`
 
 
 Link
@@ -78,19 +83,19 @@ Link
 
 A `<Link to={...}>` is a drop in replacement for `<a>` elements
 
-- to - _string_ - url
-- to - _object_ -  [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
-- onClick, className, style - analogous to dom
-- activeClass - _string_ - added to className when `to` matches current url
-- activeStyle - _object_ - merged to style when `to` matches current url
+- `to` - - url
+- `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
+- `onClick`, `className`, `style` - analogous to ReactDOM props
+- `activeClass` - added to className when `to` matches current url
+- `activeStyle` - merged to style when `to` matches current url
 
 Redirect
 ---
 
 A `<Redirect to={...} />` triggers a redirect to `to` whenever rendered.
 
-- to - _string_ - url
-- to - _object_ -  [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
+- `to` - url
+- `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
 
 
 
