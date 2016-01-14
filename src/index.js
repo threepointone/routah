@@ -3,8 +3,7 @@ import Matcher from 'route-parser';
 
 function currentLocation(){
   let loc;
-  let dispose = this.listen(location => loc = location);
-  dispose();
+  this.listen(location => loc = location)();
   return loc;
 }
 
@@ -52,10 +51,12 @@ export class Route extends Component{
   static propTypes = {
     match: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     component: PropTypes.func,
-    notFound: PropTypes.func
+    notFound: PropTypes.func,
+    props: PropTypes.object
   };
   static defaultProps = {
-    notFound: () => <noscript/>
+    notFound: () => <noscript/>,
+    props: {}
   };
   static contextTypes = {
     routah: PropTypes.object
@@ -81,7 +82,7 @@ export class Route extends Component{
     let {location} = this.state;
     if(this.state.matches){
       if(this.props.component){
-        return React.createElement(this.props.component, {location});
+        return React.createElement(this.props.component, {location, ...this.props.props});
       }
       return this.props.children(location);
     }

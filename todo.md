@@ -2,6 +2,9 @@
 - animations between urls
 - onBeforeUnload / routerWillLeave
 
+- change to path-to-regexp for matching
+- handle multiple redirects on the same render tree
+
 ~ - activeClass / activeStyle - to test
 ~ - scroll states - rackt/scroll-behavior, after historv2 compat
 ~ - redirects
