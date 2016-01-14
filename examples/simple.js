@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import {Router, Link, Route, Redirect} from '../src';
 import {createHistory, useBeforeUnload} from 'history';
 
+
 function log(...args){
   console.log(...args, this);
   return this;
@@ -33,7 +34,8 @@ class User extends Component{
             () => <div>matched!</div>
           }</Route>
           <Link to={`/${dest1}`}>/{dest1}</Link> <br/>
-          or else <span onClick={() => h.push(`/secret`)}>secret</span>
+          or else <span onClick={() => h.push(`/secret`)}>secret</span> <br/>
+          and here's a <Link to='/secret' activeClass='active'>secret link</Link>
         </div>;
       }
     }</Route>;

@@ -9,7 +9,7 @@
 ✓ - server side rendering
 ✓ - dynamic routing - require.ensure should just work
 ✓ - redux-simple-router - it just works!
-~ - activeClass / activeStyle - to test
+✓ - activeClass / activeStyle - to test
 ~ - scroll states - rackt/scroll-behavior, after historv2 compat
 ~ - redirects - todo - server side handling
 ~ - transitions / leave / enter, onBeforeUnload / routerWillLeave - rough cut

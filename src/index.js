@@ -144,6 +144,7 @@ export class Link extends Component{
     routah: PropTypes.object
   };
   static propTypes = {
+    to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onClick: PropTypes.func,
     className: PropTypes.string,
     activeClass: PropTypes.string,
@@ -154,6 +155,7 @@ export class Link extends Component{
     onClick: () => {},
     className: '',
     activeClass: '',
+    style: {},
     activeStyle: {}
   };
 
@@ -165,6 +167,7 @@ export class Link extends Component{
   render(){
     let h = this.context.routah.history;
     let active = h.createHref(this.props.to) === h.createHref(currentLocation(h));
+
     return <a
       href={this.context.routah.history.createHref(this.props.to)}
       {...this.props}
