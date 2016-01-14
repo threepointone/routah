@@ -103,12 +103,14 @@ export class Router extends Component{
 
 export class Route extends Component{
   static propTypes = {
-    match: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    path: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     component: PropTypes.func,
     notFound: PropTypes.func,
     props: PropTypes.object,
+    onMount: PropTypes.func,
     onLeave: PropTypes.func,
-    onEnter: PropTypes.func
+    onEnter: PropTypes.func,
+    onUnload: PropTypes.func
   };
   static defaultProps = {
     notFound: () => <noscript/>,
@@ -172,11 +174,12 @@ export class Route extends Component{
   }
   render(){
     let {location} = this.state;
+    let {history} = this.context.routah;
     if (this.state.matches){
       if (this.props.component){
-        return React.createElement(this.props.component, {location, ...this.props.props});
+        return React.createElement(this.props.component, {location, history, ...this.props.props});
       }
-      return this.props.children(location);
+      return this.props.children(location, history);
     }
     return this.props.notFound(location);
   }
@@ -199,6 +202,7 @@ export class Link extends Component{
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onClick: PropTypes.func,
     className: PropTypes.string,
+    style: PropTypes.object,
     activeClass: PropTypes.string,
     activeStyle: PropTypes.object
   };
