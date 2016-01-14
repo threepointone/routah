@@ -64,17 +64,13 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 
 - `path` - an [express-style](https://github.com/pillarjs/path-to-regexp) path matcher
 - `path` - an array of the above
-
-- `children (location, history)` - a [render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)
-
-- `component` - a `React.Component` which will receive *{location, history}* as props
+- render via `children (location, history)` - a [render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)
+- render via `component` - a `React.Component` which will receive *{location, history}* as props
 - `props` - additional props to transfer when using `component`
-
 - `onMount (location)`
 - `onEnter (location, callback)`
 - `onLeave (location, callback)`
 - `onUnload (location)`
-
 - `notFound ()`  - a render-callback when `path` doesn't match. defaults to `() => <noscript/>`
 
 
