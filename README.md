@@ -35,7 +35,7 @@ function App(){
         <Homepage/>
     }<Route>
     {/* or pass a component */}
-    <Route path={['/products/:id', '/byId/:id']} component={Product} />
+    <Route path={['/products/:id', '/byId/:id']} component={Product} props={{some: data}} />
     {/* link to urls / location objects */}
     <Link to={...}>elsewhere</Link>
   </div>;
