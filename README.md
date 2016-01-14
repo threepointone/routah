@@ -23,8 +23,10 @@ function App(){
       <li><Link to='/4'>Page 4</li>
     </ul>
 
-    <Route path='/1' component={Page1} /> // renders when the browser url is /1
-    <Route path='/2' component={Page2} /> // and similarly when /2
+    {/* renders when the browser url is /1 */}
+    <Route path='/1' component={Page1} />
+    {/* and similarly when /2 */}
+    <Route path='/2' component={Page2} />
 
     {/* you can use a render callback */}
     <Route path='/3'>{
@@ -38,7 +40,8 @@ function App(){
   </div>;
 }
 
-ReactDOM.render(<Router><App/></Router>)
+// wrap your app with a <Router>
+ReactDOM.render(<Router><App/></Router>);
 ```
 
 
