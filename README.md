@@ -13,40 +13,32 @@ routah
 [work in progress]
 
 ```jsx
-<Route match={'/product/:id'}>{
-  ({location: {pathname, params}}) =>
-    <div>
-      you're at {location.pathname}
-      <Product details={params.id} />
-      <Link to='/home'> ~~Homepage~~ <Link>
-    </div>
-}</Route>
-```
-
-// longform
-```jsx
-import React from 'react';
-import {render} from 'react-dom';
-import {Router, Route, Link, Redirect} from 'routah';
-
-
 function App(){
   return <div>
-    {/* use a render callback */}
-    <Route path='/'>{
-      location => // via rackt/history
-        <Homepage />
-    }<Route>
-    {/* or pass a component */}
-    <Route path={['/products/:id', '/byId/:id']} component={Product} props={{some: data}} />
-    {/* link to urls / location objects */}
-    <Link to={...}>elsewhere</Link>
+    <ul>
+      {/* link across the app */}
+      <li><Link to='/1'>Page 1</li>
+      <li><Link to='/2'>Page 2</li>
+      <li><Link to='/3'>Page 3</li>
+      <li><Link to='/4'>Page 4</li>
+    </ul>
+
+    <Route path='/1' component={Page1} /> // renders when the browser url is /1
+    <Route path='/2' component={Page2} /> // and similarly when /2
+
+    {/* you can use a render callback */}
+    <Route path='/3'>{
+      location => <Page3 /> /* add your own logic */
+    }</Route>
+
+    {/* you can also redirect to other portions of the app */}
+    <Route path='/4'>{
+      location => <Redirect to='/2' /> // triggers a `history.push`
+    }</Route>
   </div>;
 }
 
-render(<Router> // or you could pass in a custom rackt/history object
-  <App/>
-</Router>, $('#app'));
+ReactDOM.render(<Router><App/></Router>)
 ```
 
 
