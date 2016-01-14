@@ -74,7 +74,7 @@ Link
 
 A `<Link to={...}>` is a drop in replacement for `<a>` elements
 
-- `to` - - url
+- `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
 - `onClick`, `className`, `style` - analogous to ReactDOM props
 - `activeClass` - added to className when `to` matches current url
