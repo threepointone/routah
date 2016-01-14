@@ -175,13 +175,16 @@ export class Route extends Component{
   render(){
     let {location} = this.state;
     let {history} = this.context.routah;
+    let el;
     if (this.state.matches){
       if (this.props.component){
-        return React.createElement(this.props.component, {location, history, ...this.props.props});
+        el = React.createElement(this.props.component, {location, history, ...this.props.props});
       }
-      return this.props.children(location, history);
+      else {
+        el = this.props.children(location, history);
+      }
     }
-    return this.props.notFound(location);
+    return el || this.props.notFound(location);
   }
   componentWillUnmount(){
     this.dispose();

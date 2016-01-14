@@ -1,4 +1,4 @@
-- <NotFound/>
+
 - overwrite context.routah for a subtree (and handle redirects on said tree)
 - handle multiple redirects on the same render tree
 - a11y
@@ -11,6 +11,7 @@
 ✓ - activeClass / activeStyle
 ✓ - default browser history object
 ✓ - path-to-regexp for matching
+~ <NotFound/> - must see in practice
 ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
 ~ animations between urls - use hooks
 ~ - scroll states - rackt/scroll-behavior, after historv2 compat

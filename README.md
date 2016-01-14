@@ -37,6 +37,10 @@ function App(){
     <Route path='/4'>{
       location => <Redirect to='/2' /> // triggers a `history.push`
     }</Route>
+    {/* you can customize a '404' render */}
+    <Route path='/5' notFound={location => <NotFound location={location}/>}>{
+      location => false // triggers notFound
+    }</Route>
   </div>;
 }
 
