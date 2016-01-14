@@ -1,6 +1,29 @@
 import React, {Component, PropTypes} from 'react';
 import Matcher from 'route-parser';
 
+function currentLocation(){
+  let loc;
+  let dispose = this.listen(location => loc = location);
+  dispose();
+  return loc;
+}
+
+function matches(patterns, url){
+  if(!Array.isArray(patterns)){
+    patterns = [patterns];
+  }
+
+  for(let pattern of patterns){
+    var matcher = new Matcher(pattern);
+    let res = matcher.match(url)
+    if(res){
+      return res;
+    }
+  }
+  return false;
+}
+
+
 export class Router extends Component{
   state = {
     location: null
@@ -24,21 +47,6 @@ export class Router extends Component{
 }
 
 
-
-function matches(patterns, url){
-  if(!Array.isArray(patterns)){
-    patterns = [patterns];
-  }
-
-  for(let pattern of patterns){
-    var matcher = new Matcher(pattern);
-    let res = matcher.match(url)
-    if(res){
-      return res;
-    }
-  }
-  return false;
-}
 
 export class Route extends Component{
   static propTypes = {
@@ -90,14 +98,49 @@ export class Link extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
+  static propTypes = {
+    onClick: PropTypes.func,
+    className: PropTypes.string,
+    activeClass: PropTypes.string,
+    activeStyle: PropTypes.object
+  };
+
+  static defaultProps = {
+    onClick: () => {},
+    className: '',
+    activeClass: '',
+    activeStyle: {}
+  };
 
   onClick = e => {
     e.preventDefault();
+    this.props.onClick(e);
     this.context.routah.history.push(this.props.to);
   };
   render(){
-    return <a href={this.context.routah.history.createHref(this.props.to)} {...this.props} onClick={this.onClick}>
+    let h = this.context.routah.history;
+    let active = h.createHref(this.props.to) === h.createHref(h::currentLocation());
+    return <a
+      href={this.context.routah.history.createHref(this.props.to)}
+      {...this.props}
+      className={`${this.props.className} ${active ? this.props.activeClass : ''}`}
+      style={{...this.props.style, ...(active ? this.props.activeStyle : {})}}
+      onClick={this.onClick}>
       {this.props.children}
     </a>;
+  }
+}
+
+// todo - handle server side redirect
+export class Redirect extends Component{
+
+  static contextTypes = {
+    routah: PropTypes.object
+  };
+  componentDidMount(){
+    this.context.routah.history.push(this.props.to);
+  }
+  render(){
+    return <noscript/>
   }
 }

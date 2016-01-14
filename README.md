@@ -22,7 +22,7 @@ tl;dr - routes anywhere in your react component tree
 ```jsx
 import React from 'react';
 import {render} from 'react-dom';
-import {Router, Route, Link} from 'routah';
+import {Router, Route, Link, Redirect} from 'routah';
 
 const history = require('history').createHistory();
 
@@ -56,6 +56,8 @@ Route
 Link
 ---
 
+Redirect
+---
 
 
 
