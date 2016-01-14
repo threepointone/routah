@@ -1,4 +1,10 @@
 import React, {Component, PropTypes} from 'react';
+import {createHistory, useBeforeUnload} from 'history';
+
+if (typeof window !== 'undefined'){
+  window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
+}
+
 import Matcher from 'route-parser';
 
 // a helper to get the current location from the history object
@@ -35,15 +41,15 @@ export class Router extends Component{
     location: null
   };
   static propTypes = {
-    history: PropTypes.object.isRequired
+    history: PropTypes.object
   };
   static childContextTypes = {
-    routah: PropTypes.object
+    routah: PropTypes.object.isRequired
   };
   getChildContext(){
     return {
       routah: {
-        history: this.props.history
+        history: this.props.history || global.__routah_history__
       }
     };
   }

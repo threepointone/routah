@@ -9,11 +9,11 @@ tl;dr - routes anywhere in your react component tree
 
 ```jsx
 <Route match={'/product/:id'}>{
-  ({location}) =>
+  ({location: {pathname, params}}) =>
     <div>
       you're at {location.pathname}
-      {...product details}
-      <Link to='/home'>Homepage<Link>
+      <Product details={params.id} />
+      <Link to='/home'> ~~Homepage~~ <Link>
     </div>
 }</Route>
 ```
@@ -24,15 +24,13 @@ import React from 'react';
 import {render} from 'react-dom';
 import {Router, Route, Link, Redirect} from 'routah';
 
-const history = require('history').createHistory();
-
 
 function App(){
   return <div>
     {/* use a render callback */}
     <Route path='/'>{
       location => // via rackt/history
-        <Homepage/>
+        <Homepage />
     }<Route>
     {/* or pass a component */}
     <Route path={['/products/:id', '/byId/:id']} component={Product} props={{some: data}} />
@@ -41,7 +39,7 @@ function App(){
   </div>;
 }
 
-render(<Router history={history}> // via rackt/history
+render(<Router> // or you could pass in a custom rackt/history object
   <App/>
 </Router>, $('#app'));
 ```
