@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import Matcher from 'route-parser';
 
-function currentLocation(){
+function currentLocation(h){
   let loc;
-  this.listen(location => loc = location)();
+  h.listen(location => loc = location)();
   return loc;
 }
 
@@ -120,7 +120,7 @@ export class Link extends Component{
   };
   render(){
     let h = this.context.routah.history;
-    let active = h.createHref(this.props.to) === h.createHref(h::currentLocation());
+    let active = h.createHref(this.props.to) === h.createHref(currentLocation(h));
     return <a
       href={this.context.routah.history.createHref(this.props.to)}
       {...this.props}

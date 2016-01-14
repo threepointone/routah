@@ -3,12 +3,14 @@
 - onBeforeUnload / routerWillLeave
 
 - change to path-to-regexp for matching
+- be able to overwrite context.routah for a subtree
 - handle multiple redirects on the same render tree
 
+✓ - server side rendering
+✓ - dynamic routing - require.ensure should just work
+✓ - redux-simple-router - it just works!
 ~ - activeClass / activeStyle - to test
 ~ - scroll states - rackt/scroll-behavior, after historv2 compat
 ~ - redirects - todo - server side handling
-✓ - server side rendering
-✓ - dynamic routing - require.ensure should just work
-~ - async data (fetch prop? or falcor?)
-~ - index routes? - not needed really
+x - async data - not a concern of this library (or fetch prop? or falcor?)
+x - index routes? - not needed really
