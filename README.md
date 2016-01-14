@@ -46,7 +46,7 @@ function App(){
 
 render(<Router history={history}> // via rackt/history
   <App/>
-</Root>, $('#app'));
+</Router>, $('#app'));
 ```
 
 Router
