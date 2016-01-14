@@ -34,11 +34,8 @@ function App(){
       location => // via rackt/history
         <Homepage/>
     }<Route>
-
-    <Route match='/products/:id'>{
-      (location, params) =>
-        <Product id={location.params.id} />
-    }<Route>
+    {/* or pass a component */}
+    <Route match='/products/:id' component={Product} />
     {/* link to urls / location objects */}
     <Link to={...}>elsewhere</Link>
   </div>;
@@ -48,6 +45,7 @@ render(<Router history={history}> // via rackt/history
   <App/>
 </Router>, $('#app'));
 ```
+
 
 Router
 ---

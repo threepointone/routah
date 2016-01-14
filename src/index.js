@@ -26,7 +26,6 @@ export class Router extends Component{
 
 
 function matches(patterns, url){
-  console.log(patterns);
   if(!Array.isArray(patterns)){
     patterns = [patterns];
   }
@@ -44,6 +43,7 @@ function matches(patterns, url){
 export class Route extends Component{
   static propTypes = {
     match: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    component: PropTypes.func,
     notFound: PropTypes.func
   };
   static defaultProps = {
@@ -54,16 +54,30 @@ export class Route extends Component{
   };
   componentWillMount(){
     this.dispose = this.context.routah.history.listen(location => {
+      let doesMatch = true, match;
+      if(this.props.match){
+        match = matches(this.props.match, this.context.routah.history.createHref(location));
+        doesMatch = !!match;
+      }
+
       this.setState({
-        location,
-        matches: this.props.match ? matches(this.props.match, this.context.routah.history.createHref(location)) : true
+        location: {
+          ...location,
+          params: match || {}
+        },
+        matches: doesMatch
       })
     });
   }
   render(){
-    return this.state.matches ?
-      this.props.children(this.state.location, this.state.matches) :
-      this.props.notFound(this.state.location);
+    let {location} = this.state;
+    if(this.state.matches){
+      if(this.props.component){
+        return React.createElement(this.props.component, {location});
+      }
+      return this.props.children(location);
+    }
+    return this.props.notFound(location);
   }
   componentWillUnmount(){
     this.dispose();
