@@ -3,8 +3,9 @@ routah
 
 yet another router, via react + history + route-parser
 
+tl;dr - routes anywhere in your react component tree
 
-// tl;dr - routes anywhere in your react component tree
+[work in progress]
 
 ```jsx
 <Route match={'/product/:id'}>{
@@ -34,9 +35,12 @@ function App(){
         <Homepage/>
     }<Route>
     {/* or pass a component */}
-    <Route match='/products/:id' component={Product}/>
+    <Route match='/products/:id'>{
+      (location, params) =>
+        <Product id={location.params.id} />
+    }<Route>
     {/* link to urls / location objects */}
-    <Link to={...}/>
+    <Link to={...}>elsewhere</Link>
   </div>;
 }
 

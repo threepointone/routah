@@ -33,8 +33,9 @@ function matches(patterns, url){
 
   for(let pattern of patterns){
     var matcher = new Matcher(pattern);
-    if(matcher.match(url)){
-      return true;
+    let res = matcher.match(url)
+    if(res){
+      return res;
     }
   }
   return false;
@@ -61,7 +62,7 @@ export class Route extends Component{
   }
   render(){
     return this.state.matches ?
-      this.props.children(this.state.location) :
+      this.props.children(this.state.location, this.state.matches) :
       this.props.notFound(this.state.location);
   }
   componentWillUnmount(){
