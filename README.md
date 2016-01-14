@@ -20,6 +20,7 @@ function App(){
       <li><Link to='/1'>Page 1</li>
       <li><Link to='/2'>Page 2</li>
       <li><Link to='/3'>Page 3</li>
+      <li><Link to='/p/1e536f'>Page 3</li>
       <li><Link to='/4'>Page 4</li>
     </ul>
 
@@ -31,6 +32,14 @@ function App(){
     {/* you can use a render callback */}
     <Route path='/3'>{
       location => <Page3 /> /* add your own logic */
+    }</Route>
+
+    {/* match across paths */}
+    <Route path={['/p/:id', 'para/:id']}>{
+      location => /* add your own logic */
+        <Page section={location.params.id}
+          sub={location.query.sub}
+        />
     }</Route>
 
     {/* you can also redirect to other portions of the app */}
@@ -45,8 +54,7 @@ function App(){
   </div>;
 }
 
-// wrap your app with a <Router>
-ReactDOM.render(<Router><App/></Router>);
+ReactDOM.render(<Router><App/></Router>, document.body)
 ```
 
 
