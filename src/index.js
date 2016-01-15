@@ -101,7 +101,9 @@ export class Router extends Component{
     };
   }
   render(){
-    return this.props.children;
+    return typeof this.props.children === 'function' ?
+      this.props.children(this.props.history || global.__routah_history__) :
+      this.props.children;
   }
 }
 
