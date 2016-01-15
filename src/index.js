@@ -1,4 +1,8 @@
 import React, {Component, PropTypes} from 'react';
+
+// express.js` path matching
+import pathToRegexp from 'path-to-regexp';
+
 import {createHistory, useBeforeUnload} from 'history';
 
 // setup a hidden singleton history object. a good default.
@@ -6,8 +10,6 @@ if (typeof window !== 'undefined'){
   window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
 }
 
-// express.js` path matching
-import pathToRegexp from 'path-to-regexp';
 
 const has = {}.hasOwnProperty;
 
@@ -275,9 +277,7 @@ function find(arr, fn){
   }
 }
 
-
-
-
+// a la react-router, only the first-matching `<Route/>` child is rendered.
 export class RouteStack extends Component{
   static contextTypes = {
     routah: PropTypes.object

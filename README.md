@@ -122,8 +122,14 @@ A `<Redirect to={...} />` triggers a redirect to `to` whenever rendered.
 
 RouteStack
 ---
-
-a la react-router, only the first-matching `<Route/>` child is rendered.
+This emulates a behavior from react-router - given one or more <Routes/>, render only the first matching element. This makes it easy to make Index/NotFound pages. eg -
+```jsx
+<RouteStack>
+  <Route path='/about' component={About} />
+  <Route path='/inbox' component={Inbox} />
+  <Route component={NotFound} />
+</RouteStack>
+```
 
 - `children` - one or more `<Route/>` elements
 - `notFound ()` - when no child matches. good for 404s!
