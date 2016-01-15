@@ -122,6 +122,7 @@ A `<Redirect to={...} />` triggers a redirect to `to` whenever rendered.
 
 RouteStack
 ---
+
 This emulates a behavior from react-router - given one or more <Routes/>, render only the first matching element. This makes it easy to make Index/NotFound pages. eg -
 ```jsx
 <RouteStack>
