@@ -36,10 +36,12 @@ function App(){
 
     {/* match across paths */}
     <Route path={['/p/:id', 'para/:id']}>{
-      location => /* add your own logic */
-        <Page section={location.params.id}
-          sub={location.query.sub}
-        />
+      location =>
+        <div>
+          <Page section={location.params.id} sub={location.query.sub} />
+          {/* nest routes wherever}
+          <Route path='/p/special' component={Special}/>
+        </div>
     }</Route>
 
     {/* you can also redirect to other portions of the app */}
@@ -52,7 +54,7 @@ function App(){
       <div onClick={() => history.push('/1')}>back to /1</div>
     }</Route>
 
-    {/* you can customize a '404' render */}
+    {/* customize a '404' render */}
     <Route path='/5' notFound={location => <NotFound location={location}/>}>{
       location => false // triggers notFound
     }</Route>
