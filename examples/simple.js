@@ -21,17 +21,23 @@ class App extends Component{
           () => <div>about us</div>
         }</Route>
         <Route path='/inbox'>{
-          () => <div>about us</div>
+          () => <div>inbox</div>
         }</Route>
         <Route path='/dashboard'>{
           () => <div>dashboard</div>
         }</Route>
         <Route path='/'>{
           () => <Redirect to='/dashboard' />
-        }</Route>;
+        }</Route>
+        <RouteStack>
+          <Route path='/about'>{() => <div>stack about</div>}</Route>
+          <Route path='/inbox'>{() => <div>stack inbox</div>}</Route>
+          <Route path='/bababooey'>{() => <div>stack bababooey</div>}</Route>
+          <Route>{() => <div>stack default</div>}</Route>
+        </RouteStack>
       </div>
     </div>;
   }
 }
 
-export default <Router><App/></Router>;
+render(<Router><App/></Router>, document.getElementById('app'));

@@ -247,6 +247,10 @@ export class Link extends Component{
     activeStyle: {}
   };
 
+  state = {
+    location: '/'
+  };
+
   onClick = e => {
     e.preventDefault();
     this.props.onClick(e);
@@ -268,6 +272,9 @@ export class Link extends Component{
       onClick={this.onClick}>
       {this.props.children}
     </a>;
+  }
+  componentWillMount(){
+    this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
   }
   componentWillUnmount(){
     this.dispose();
@@ -297,14 +304,22 @@ export class RouteStack extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
+
   static propTypes = {
     notFound: PropTypes.func
   };
   static defaultProps = {
-    notFound: <noscript/>
+    notFound: () => <noscript/>
   };
+  componentWillMount(){
+    this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
+  }
+  componentWillUnmount(){
+    this.dispose();
+    delete this.dispose;
+  }
   render(){
-    let url = currentLocation(this.context.routah.history);
+    let url = this.context.routah.history.createHref(this.state.location);
     return find(this.props.children, c => matches(c.props.path, url) ? c : false);
   }
 }
