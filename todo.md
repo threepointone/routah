@@ -14,8 +14,8 @@
 - ✓ - default node history object
 - ✓ - path-to-regexp for matching
 - ✓ - server side rendering
+- ✓ - `<NotFound/>` - via RouteStack
 
-- ~ - `<NotFound/>` - must see in practice
 - ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
 - ~ - animations between urls - use hooks/springs?
 - ~ - scroll states - use rackt/scroll-behavior, after historyV2 compat

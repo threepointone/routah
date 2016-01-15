@@ -17,15 +17,18 @@ class Counter extends Component{
   };
   render(){
     return <div>
-
-                    <ul>
+      <ul>
         <li><Link activeStyle={active} to='/1'>1</Link></li>
         <li><Link activeStyle={active} to='/2'>2</Link></li>
         <li><Link activeStyle={active} to='/3'>3</Link></li>
       </ul>
-
-      </div>;
-
+      <Route>{location =>
+        <div onClick={this.onClick}>
+          clicked {this.state.count} times <br/>
+          you are at {location.pathname}
+        </div>}
+      </Route>
+    </div>;
   }
 }
 
