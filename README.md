@@ -10,7 +10,6 @@ routah
 - server-side friendly
 - more!
 
-
 ```jsx
 
 import {Router, Route, Link, Redirect} from 'routah';
@@ -61,8 +60,6 @@ differences from react-router
 - sibling `<Route />` elements don't depend on each other (use `<RouteStack />` for similar behavior)
 - very little work has gone into this (so far)
 
-
-
 Router
 ---
 
@@ -87,7 +84,6 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 <Route path={['/inbox', '/inbox/:id']} component={Inbox} props={{some: data}} />
 ```
 
-
 - `path` - an [express-style](https://github.com/pillarjs/path-to-regexp) path matcher
 - `path` - an array of the above
 - render via `children (location, history)` - a [render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)
@@ -98,7 +94,6 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 - `onLeave (location, callback)`
 - `onUnload (location)`
 - `notFound ()`  - a render-callback when `path` doesn't match. defaults to `() => <noscript/>`
-
 
 Link
 ---
@@ -124,7 +119,6 @@ A `<Redirect to={...} />` triggers a redirect to `to` whenever/wherever rendered
 
 - `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
-
 
 RouteStack
 ---
