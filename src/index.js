@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {createHistory, useBeforeUnload} from 'history';
 
+// setup a hidden singleton history object. a good default.
 if (typeof window !== 'undefined'){
   window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
 }
 
-// import Matcher from 'route-parser';
+// express.js` path matching
 import pathToRegexp from 'path-to-regexp';
 
 const has = {}.hasOwnProperty;
@@ -57,7 +58,10 @@ function pathMatch(pattern, path){
   return params;
 
 }
+
+
 function matches(patterns, url){
+  if (!patterns) return true;
   if (!Array.isArray(patterns)){
     patterns = [patterns];
   }
@@ -100,7 +104,10 @@ export class Router extends Component{
 }
 
 
-
+// The big idea -
+// `<Route path={...} .../>` will render only when `path` matches the current browser url
+// that's it.
+// we introduce some lifecycle hooks and customizability for ease of dev
 export class Route extends Component{
   static propTypes = {
     path: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -139,9 +146,10 @@ export class Route extends Component{
     });
   };
   componentWillMount(){
-    let h = this.context.routah.history;
     this.dispose = this.context.routah.history.listen(this.refresh);
-
+  }
+  componentDidMount(){
+    let h = this.context.routah.history;
     if (!this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)))){
       this.props.onMount(currentLocation(h));
     }
@@ -164,7 +172,6 @@ export class Route extends Component{
         return this.props.onUnload(currentLocation(h));
       }
     });
-
   }
   componentWillReceiveProps(next){
     if (next.path !== this.props.path){
@@ -173,14 +180,17 @@ export class Route extends Component{
     }
   }
   render(){
+
     let {location} = this.state;
     let {history} = this.context.routah;
     let el;
     if (this.state.matches){
       if (this.props.component){
+        // components / props flavor
         el = React.createElement(this.props.component, {location, history, ...this.props.props});
       }
       else {
+        // render callback
         el = this.props.children(location, history);
       }
     }
@@ -197,6 +207,8 @@ export class Route extends Component{
 }
 
 
+// a useful replacement for <a> elements.
+// includes clickjacking, and custom styling when 'active',
 export class Link extends Component{
   static contextTypes = {
     routah: PropTypes.object
@@ -238,6 +250,8 @@ export class Link extends Component{
   }
 }
 
+
+// `<Redirect to={...}/>` simply triggers `history.push()` when rendered
 // todo - handle server side redirect
 export class Redirect extends Component{
 
@@ -260,6 +274,9 @@ function find(arr, fn){
     }
   }
 }
+
+
+
 
 export class RouteStack extends Component{
   static contextTypes = {

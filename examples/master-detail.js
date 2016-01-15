@@ -1,0 +1,1 @@
+// standard master detail view
