@@ -3,10 +3,11 @@ import React, {Component, PropTypes} from 'react';
 // express.js` path matching
 import pathToRegexp from 'path-to-regexp';
 
-import {createHistory, useBeforeUnload} from 'history';
+import {createHistory, createMemoryHistory, useBeforeUnload} from 'history';
 
 // setup a hidden singleton history object. a good default.
-if (typeof window !== 'undefined'){
+const isBrowser = typeof window !== 'undefined';
+if (isBrowser){
   window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
 }
 
@@ -93,15 +94,21 @@ export class Router extends Component{
     location: null
   };
   static propTypes = {
-    history: PropTypes.object
+    history: PropTypes.object,
+    url: PropTypes.string  // only for server side
+  };
+  static defaultProps = {
+    url: '/'
   };
   static childContextTypes = {
     routah: PropTypes.object.isRequired
   };
+  __routah_history__ = isBrowser ? global.__routah_history__ : useBeforeUnload(createMemoryHistory)(this.props.url);
   getChildContext(){
+
     return {
       routah: {
-        history: this.props.history || global.__routah_history__
+        history: this.props::has('history') ? this.props.history : this.__routah_history__
       }
     };
   }

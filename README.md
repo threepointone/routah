@@ -21,7 +21,6 @@ function App(){
       {/* link across the app */}
       <li><Link to='/1'>Page 1</Link></li>
       <li><Link to='/2'>Page 2</Link></li>
-      <li><Link to='/3'>Page 3</Link></li>
       <li><Link to='/p/1e536f'>Page 3</Link></li>
       <li><Link to='/4'>Page 4</Link></li>
     </ul>
@@ -31,35 +30,23 @@ function App(){
     {/* and similarly when /2 */}
     <Route path='/2' component={Page2} props={{more: data}}/>
 
-    {/* you can use a render callback */}
-    <Route path='/3'>{
-      location => <Page3 /> /* add your own logic */
-    }</Route>
-
     {/* match across paths */}
     <Route path={['/p/:id', 'para/:id']}>{
-      location =>
+      location => // you can use a render callback
         <div>
           <Page section={location.params.id} sub={location.query.sub} />
           {/* nest routes wherever */}
-          <Route path='/p/special' component={Special}/>
+          <Route path='/p/special'
+            component={Special} onEnter={::console.log} />
         </div>
     }</Route>
 
     {/* you can also redirect to other portions of the app */}
-    <Route path='/4'>{
+    <Route path='/3'>{
       location => <Redirect to='/2' /> // triggers a `history.push`
     }</Route>
 
-    {/* access the history object */}
-    <Route>{ (loc, history) =>
-      <div onClick={() => history.push('/1')}>back to /1</div>
-    }</Route>
-
-    {/* customize a '404' render */}
-    <Route path='/5' notFound={location => <NotFound location={location}/>}> {
-      location => false // triggers notFound
-    }</Route>
+    {/* read the docs/examples for more! */}
   </div>;
 }
 

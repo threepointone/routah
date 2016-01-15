@@ -5,15 +5,17 @@
 - perfffff
 - testsssss
 
-- ✓ - server side rendering
+
 - ✓ - dynamic routing - require.ensure should just work
 - ✓ - redux-simple-router - it just works!
 - ✓ - activeClass / activeStyle
 - ✓ - default browser history object
+~ ✓ - default node history object
 - ✓ - path-to-regexp for matching
-- ~ <NotFound/> - must see in practice
+- ✓ - server side rendering
+- ~ - <NotFound/> - must see in practice
 - ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
-- ~ animations between urls - use hooks
+- ~ - animations between urls - use hooks
 - ~ - scroll states - rackt/scroll-behavior, after historv2 compat
 - ~ - redirects - todo - server side handling
 - x - async data - not a concern of this library (or fetch prop? or falcor?)

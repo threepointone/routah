@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {render} from 'react-dom';
-import {Router, Link, Route, Redirect} from './src';
+import {Router, Link, Route, Redirect} from '../src';
 
 
 class App extends Component{
@@ -8,7 +8,6 @@ class App extends Component{
     routah: PropTypes.object
   };
   render(){
-    console.log(this.context);
     return <Route onEnter={(l, cb) => console.log('enter', l.pathname) || cb() } onLeave={(l, cb) => console.log('leave', l.pathname) || cb()}>{
       location => {
         let dest1 = Math.round(Math.random() * 1000);
