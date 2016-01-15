@@ -13,7 +13,7 @@ routah
 
 ```jsx
 
-import {Router, Router, Link, Redirect} from 'routah';
+import {Router, Route, Link, Redirect} from 'routah';
 
 function App(){
   return <div>
@@ -66,7 +66,7 @@ function App(){
 ReactDOM.render(<Router><App/></Router>, document.body)
 ```
 
-differences with react-router
+differences from react-router
 ---
 
 - `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`props` props)
