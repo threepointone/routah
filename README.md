@@ -57,7 +57,7 @@ function App(){
     }</Route>
 
     {/* customize a '404' render */}
-    <Route path='/5' notFound={location => <NotFound location={location}/>}>{
+    <Route path='/5' notFound={location => <NotFound location={location}/>}> {
       location => false // triggers notFound
     }</Route>
   </div>;
@@ -108,7 +108,7 @@ A `<Link to={...}>` is a replacement for `<a>` elements
 - `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
 - `onClick`, `className`, `style` - analogous to ReactDOM props
-- `activeClass` - added to className when `to` matches current url
+- `activeClass` - added to className when `to` matches current url. defaults to 'active'.
 - `activeStyle` - merged to style when `to` matches current url
 
 Redirect

@@ -227,7 +227,7 @@ export class Link extends Component{
   static defaultProps = {
     onClick: () => {},
     className: '',
-    activeClass: '',
+    activeClass: 'active',
     style: {},
     activeStyle: {}
   };
