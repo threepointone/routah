@@ -2,6 +2,7 @@
 - overwrite context.routah for a subtree (and handle redirects on said tree)
 - handle multiple redirects on the same render tree
 - a11y
+- .dispose() on server side
 - perfffff
 - testsssss
 
@@ -13,10 +14,12 @@
 ~ ✓ - default node history object
 - ✓ - path-to-regexp for matching
 - ✓ - server side rendering
+
 - ~ - <NotFound/> - must see in practice
 - ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
-- ~ - animations between urls - use hooks
+- ~ - animations between urls - use hooks/springs?
 - ~ - scroll states - use rackt/scroll-behavior, after historyV2 compat
 - ~ - redirects - todo - server side handling
+
 - x - async data - not a concern of this library (or fetch prop? or falcor?)
 - x - index routes? - not needed really

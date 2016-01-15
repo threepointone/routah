@@ -163,16 +163,17 @@ export class Route extends Component{
   };
   componentWillMount(){
     this.dispose = this.context.routah.history.listen(this.refresh);
+
   }
   componentDidMount(){
     let h = this.context.routah.history;
-    if (!this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)))){
+    if (matches(this.props.path,  h.createHref(currentLocation(h)))){
       this.props.onMount(currentLocation(h));
     }
 
     this.disposeBefore = this.context.routah.history.listenBefore((location, callback) => {
-      let matchesCurrent = !this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)));
-      let matchesNext = !this.props.path || matches(this.props.path,  h.createHref(location));
+      let matchesCurrent = matches(this.props.path,  h.createHref(currentLocation(h)));
+      let matchesNext = matches(this.props.path,  h.createHref(location));
       if (!matchesCurrent && matchesNext){
         return this.props.onEnter(location, callback);
       }
@@ -184,7 +185,7 @@ export class Route extends Component{
     });
 
     this.disposeUnload = this.context.routah.history.listenBeforeUnload(() => {
-      if (!this.props.path || matches(this.props.path,  h.createHref(currentLocation(h)))){
+      if (matches(this.props.path,  h.createHref(currentLocation(h)))){
         return this.props.onUnload(currentLocation(h));
       }
     });
@@ -251,18 +252,26 @@ export class Link extends Component{
     this.props.onClick(e);
     this.context.routah.history.push(this.props.to);
   };
+  componentWillMount(){
+    this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
+  }
+
   render(){
     let h = this.context.routah.history;
-    let active = h.createHref(this.props.to) === h.createHref(currentLocation(h));
+    let active = h.createHref(this.props.to) === h.createHref(this.state.location);
 
     return <a
-      href={this.context.routah.history.createHref(this.props.to)}
+      href={h.createHref(this.props.to)}
       {...this.props}
       className={`${this.props.className} ${active ? this.props.activeClass : ''}`}
       style={{...this.props.style, ...(active ? this.props.activeStyle : {})}}
       onClick={this.onClick}>
       {this.props.children}
     </a>;
+  }
+  componentWillUnmount(){
+    this.dispose();
+    delete this.dispose;
   }
 }
 
