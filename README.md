@@ -80,6 +80,9 @@ Router
 ---
 
 Wrap your application in a `<Router>` element to start the router
+```jsx
+render(<Router><App/></Router>, element);
+```
 
 - `history` - (optional) [history](https://github.com/rackt/history) object
 
@@ -87,6 +90,16 @@ Route
 ---
 
 A `<Route path={...}>` element renders only when the current url matches the `path` expression.
+```jsx
+// you can use a render-callback
+<Route path='/about'>{
+  () => <div>About Us</div>
+}</Route>
+
+// or pass the component and optionally props
+<Route path={['/inbox', '/inbox/:id']} component={Inbox} props={{some: data}} />
+```
+
 
 - `path` - an [express-style](https://github.com/pillarjs/path-to-regexp) path matcher
 - `path` - an array of the above
@@ -104,6 +117,9 @@ Link
 ---
 
 A `<Link to={...}>` is a replacement for `<a>` elements
+```jsx
+<Link to={{path: '/inbox', query: {id}}}>message {id}</Link>
+```
 
 - `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
@@ -114,7 +130,10 @@ A `<Link to={...}>` is a replacement for `<a>` elements
 Redirect
 ---
 
-A `<Redirect to={...} />` triggers a redirect to `to` whenever rendered.
+A `<Redirect to={...} />` triggers a redirect to `to` whenever/wherever rendered.
+```jsx
+<Route path='/old' component={Redirect}, props={{to: '/new'}} />
+```
 
 - `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
