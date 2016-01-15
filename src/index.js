@@ -10,7 +10,6 @@ if (typeof window !== 'undefined'){
   window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
 }
 
-
 const has = {}.hasOwnProperty;
 
 function find(arr, fn){
