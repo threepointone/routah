@@ -19,11 +19,11 @@ function App(){
   return <div>
     <ul>
       {/* link across the app */}
-      <li><Link to='/1'>Page 1</li>
-      <li><Link to='/2'>Page 2</li>
-      <li><Link to='/3'>Page 3</li>
-      <li><Link to='/p/1e536f'>Page 3</li>
-      <li><Link to='/4'>Page 4</li>
+      <li><Link to='/1'>Page 1</Link></li>
+      <li><Link to='/2'>Page 2</Link></li>
+      <li><Link to='/3'>Page 3</Link></li>
+      <li><Link to='/p/1e536f'>Page 3</Link></li>
+      <li><Link to='/4'>Page 4</Link></li>
     </ul>
 
     {/* renders when the browser url is /1 */}
