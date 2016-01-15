@@ -16,7 +16,7 @@
 - ~ - <NotFound/> - must see in practice
 - ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
 - ~ - animations between urls - use hooks
-- ~ - scroll states - rackt/scroll-behavior, after historv2 compat
+- ~ - scroll states - use rackt/scroll-behavior, after historyV2 compat
 - ~ - redirects - todo - server side handling
 - x - async data - not a concern of this library (or fetch prop? or falcor?)
 - x - index routes? - not needed really
