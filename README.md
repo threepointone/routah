@@ -39,7 +39,7 @@ function App(){
       location =>
         <div>
           <Page section={location.params.id} sub={location.query.sub} />
-          {/* nest routes wherever}
+          {/* nest routes wherever */}
           <Route path='/p/special' component={Special}/>
         </div>
     }</Route>
