@@ -251,3 +251,30 @@ export class Redirect extends Component{
     return <noscript/>;
   }
 }
+
+function find(arr, fn){
+  for (let i = 0; i < arr.length; i++){
+    let res = fn(arr[i]);
+    if (res){
+      return arr[i];
+    }
+  }
+}
+
+export class RouteStack extends Component{
+  static contextTypes = {
+    routah: PropTypes.object
+  };
+  static propTypes = {
+    notFound: PropTypes.func
+  };
+  static defaultProps = {
+    notFound: <noscript/>
+  };
+  render(){
+    let url = currentLocation(this.context.routah.history);
+    return find(this.props.children, c => matches(c.props.path, url));
+  }
+}
+
+

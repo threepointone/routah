@@ -120,5 +120,11 @@ A `<Redirect to={...} />` triggers a redirect to `to` whenever rendered.
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
 
 
+RouteStack
+---
 
+a la react-router, only the first-matching `<Route/>` child is rendered.
+
+- `children` - one or more `<Route/>` elements
+- `notFound ()` - when no child matches. good for 404s!
 
