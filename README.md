@@ -93,7 +93,7 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 - `onEnter (location, callback)`
 - `onLeave (location, callback)`
 - `onUnload (location)`
-- `notFound ()`  - a render-callback when `path` doesn't match. defaults to `() => <noscript/>`
+- `notFound ()`  - a render-callback when `path` doesn't match. defaults to `() => null`
 
 Link
 ---

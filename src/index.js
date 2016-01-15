@@ -136,7 +136,7 @@ export class Route extends Component{
     onUnload: PropTypes.func
   };
   static defaultProps = {
-    notFound: () => <noscript/>,
+    notFound: () => null,
     props: {},
     onMount: () => {},
     onEnter: (l, cb) => cb(),
@@ -294,7 +294,7 @@ export class Redirect extends Component{
     this.context.routah.history.push(this.props.to);
   }
   render(){
-    return <noscript/>;
+    return null;
   }
 }
 
@@ -309,7 +309,7 @@ export class RouteStack extends Component{
     notFound: PropTypes.func
   };
   static defaultProps = {
-    notFound: () => <noscript/>
+    notFound: () => null
   };
   componentWillMount(){
     this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
