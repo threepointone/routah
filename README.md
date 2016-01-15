@@ -10,9 +10,11 @@ routah
 - server-side friendly
 - more!
 
-[work in progress]
 
 ```jsx
+
+import {Router, Router, Link, Redirect} from 'routah';
+
 function App(){
   return <div>
     <ul>
@@ -63,6 +65,15 @@ function App(){
 
 ReactDOM.render(<Router><App/></Router>, document.body)
 ```
+
+differences with react-router
+---
+
+- `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`props` props)
+- `<Route />` elements can be anywhere in the app
+- sibling `<Route />` elements don't depend on each other
+- very little work has gone into this (so far)
+
 
 
 Router
