@@ -13,6 +13,16 @@ if (typeof window !== 'undefined'){
 
 const has = {}.hasOwnProperty;
 
+function find(arr, fn){
+  for (let i = 0; i < arr.length; i++){
+    let res = fn(arr[i]);
+    if (res){
+      return res;
+    }
+  }
+}
+
+
 // a helper to get the current location from the history object
 function currentLocation(h){
   let loc;
@@ -63,18 +73,14 @@ function pathMatch(pattern, path){
 
 
 function matches(patterns, url){
-  if (!patterns) return true;
+  if (!patterns){
+    return true;
+  }
   if (!Array.isArray(patterns)){
-    patterns = [patterns];
+    return pathMatch(patterns, url);
   }
 
-  for (let pattern of patterns){
-    let res = pathMatch(pattern, url);
-    if (res){
-      return res;
-    }
-  }
-  return false;
+  return find(patterns, p => pathMatch(p, url));
 }
 
 
@@ -270,14 +276,6 @@ export class Redirect extends Component{
   }
 }
 
-function find(arr, fn){
-  for (let i = 0; i < arr.length; i++){
-    let res = fn(arr[i]);
-    if (res){
-      return arr[i];
-    }
-  }
-}
 
 // a la react-router, only the first-matching `<Route/>` child is rendered.
 export class RouteStack extends Component{
@@ -292,7 +290,7 @@ export class RouteStack extends Component{
   };
   render(){
     let url = currentLocation(this.context.routah.history);
-    return find(this.props.children, c => matches(c.props.path, url));
+    return find(this.props.children, c => matches(c.props.path, url) ? c : false);
   }
 }
 
