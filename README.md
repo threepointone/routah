@@ -103,7 +103,7 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 Link
 ---
 
-A `<Link to={...}>` is a drop in replacement for `<a>` elements
+A `<Link to={...}>` is a replacement for `<a>` elements
 
 - `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
