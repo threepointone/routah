@@ -27,7 +27,7 @@ function App(){
     {/* renders when the browser url is /1 */}
     <Route path='/1' component={Page1} />
     {/* and similarly when /2 */}
-    <Route path='/2' component={Page2} />
+    <Route path='/2' component={Page2} props={{more: data}}/>
 
     {/* you can use a render callback */}
     <Route path='/3'>{
