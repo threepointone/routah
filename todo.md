@@ -7,19 +7,19 @@
 - testsssss
 
 
-- ✓ - dynamic routing - require.ensure should just work
-- ✓ - redux-simple-router - it just works!
+- ✓ - dynamic routing * require.ensure should just work
+- ✓ - redux-simple-router * it just works!
 - ✓ - activeClass / activeStyle
 - ✓ - default browser history object
 - ✓ - default node history object
 - ✓ - path-to-regexp for matching
 - ✓ - server side rendering
-- ✓ - `<NotFound/>` - via RouteStack
+- ✓ - `<NotFound/>` via RouteStack
 
-- ~ - transitions / leave / enter, onBeforeUnload - todo - authWare flow
-- ~ - animations between urls - use hooks/springs?
-- ~ - scroll states - use rackt/scroll-behavior, after historyV2 compat
-- ~ - redirects - todo - server side handling
+- ~ - transitions / leave / enter, onBeforeUnload * todo: authWare flow
+- ~ - animations between urls * use hooks/springs?
+- ~ - scroll states * use rackt/scroll-behavior, after historyV2 compat
+- ~ - redirects * todo: server side handling
 
-- x - async data - not a concern of this library (or fetch prop? or falcor?)
-- x - index routes? - not needed really
+- x - async data * not a concern of this library (or fetch prop? or falcor?)
+- x - <IndexRoutex/>? * not needed, just use a <Route path='/' />
