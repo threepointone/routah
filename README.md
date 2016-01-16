@@ -6,7 +6,6 @@ routah
 - heavily inspired by [react-router](https://github.com/rackt/react-router) and [react-motion](https://github.com/chenglou/react-motion)
 - nest `<Route />` elements anywhere in your app
 - [express](http://expressjs.com/)-style pattern matching
-- [redux-simple-router](https://www.npmjs.com/package/redux-simple-router) compatible
 - server-side friendly
 - more!
 
