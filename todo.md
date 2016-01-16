@@ -22,4 +22,4 @@
 - ~ - redirects * todo: server side handling
 
 - x - async data * not a concern of this library (or fetch prop? or falcor?)
-- x - <IndexRoutex/>? * not needed, just use a <Route path='/' />
+- x - `<IndexRoutex/>`? * not needed, just use a `<Route path='/' />`
