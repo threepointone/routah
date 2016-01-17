@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component, Children, PropTypes} from 'react';
 
 // express.js` path matching
 import pathToRegexp from 'path-to-regexp';
@@ -137,7 +137,8 @@ export class Route extends Component{
     onMount: PropTypes.func,
     onLeave: PropTypes.func,
     onEnter: PropTypes.func,
-    onUnload: PropTypes.func
+    onUnload: PropTypes.func,
+    children: PropTypes.func
   };
   static defaultProps = {
     notFound: () => null,
@@ -310,13 +311,20 @@ export class RouteStack extends Component{
   };
 
   static propTypes = {
-    notFound: PropTypes.func
+    notFound: PropTypes.func,
+    children: (props, key) => {
+      let bad = find(Children.toArray(props.children), c => c.type !== Route);
+      if (bad){
+        return new Error('<RouteStack/> only accepts <Route/>s as children\n');
+      }
+      return null;
+    }
   };
   static defaultProps = {
     notFound: () => null
   };
   componentWillMount(){
-    this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
+    this.dispose = this.context.routah.history.listen(location => this.setState({location}));
   }
   componentWillUnmount(){
     this.dispose();
@@ -324,7 +332,7 @@ export class RouteStack extends Component{
   }
   render(){
     let url = this.context.routah.history.createHref(this.state.location);
-    return find(this.props.children, c => matches(c.props.path, url) ? c : false);
+    return find(Children.toArray(this.props.children), c => matches(c.props.path, url) ? c : false);
   }
 }
 
