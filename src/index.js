@@ -14,8 +14,8 @@ if (isBrowser){
 const has = {}.hasOwnProperty;
 
 function find(arr, fn){
-  for (let i = 0; i < arr.length; i++){
-    let res = fn(arr[i]);
+  for (let el of arr){
+    let res = fn(el);
     if (res){
       return res;
     }
@@ -100,6 +100,10 @@ export class Router extends Component{
   static defaultProps = {
     url: '/'
   };
+  static contextTypes = {
+    // discover if we're nested in abother <Router/>
+    routah: PropTypes.object
+  };
   static childContextTypes = {
     routah: PropTypes.object.isRequired
   };
@@ -108,7 +112,7 @@ export class Router extends Component{
 
     return {
       routah: {
-        history: this.props::has('history') ? this.props.history : this.__routah_history__
+        history: (this.props::has('history') && this.props.history) || (this.context.routah || {}).history || this.__routah_history__
       }
     };
   }
@@ -323,5 +327,4 @@ export class RouteStack extends Component{
     return find(this.props.children, c => matches(c.props.path, url) ? c : false);
   }
 }
-
 
