@@ -312,12 +312,10 @@ export class RouteStack extends Component{
 
   static propTypes = {
     notFound: PropTypes.func,
-    children: (props, key) => {
-      let bad = find(Children.toArray(props.children), c => c.type !== Route);
-      if (bad){
-        return new Error('<RouteStack/> only accepts <Route/>s as children\n');
-      }
-      return null;
+    children(props) {
+      return find(Children.toArray(props.children), c => c.type !== Route) ?
+        new Error('<RouteStack/> only accepts <Route/>s as children\n') :
+        null;
     }
   };
   static defaultProps = {
@@ -332,7 +330,7 @@ export class RouteStack extends Component{
   }
   render(){
     let url = this.context.routah.history.createHref(this.state.location);
-    return find(Children.toArray(this.props.children), c => matches(c.props.path, url) ? c : false);
+    return find(Children.toArray(this.props.children), c => matches(c.props.path, url) ? c : false) || this.props.notFound();
   }
 }
 
