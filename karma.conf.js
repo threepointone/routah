@@ -1,22 +1,26 @@
 // this doesn't pass through babel, so no fancy js pls
-
 module.exports = function(config){
   config.set({
     browsers: ['Chrome'],
     files: ['./tests/index.js'],
-    reporters: ['mocha'],
+    reporters: ['mocha', 'coverage'],
     mochaReporter: {
       output: 'autowatch'
     },
     preprocessors: {
-      './tests/index.js': ['webpack']
+      '**/src/*.js': ['coverage'],
+      './tests/index.js': ['webpack'],
     },
     webpack: {
       module: {
         loaders: [{
           test: /\.js$/,
-          loader: 'babel',
-          exclude: /node_modules/
+          exclude: /node_modules/,
+          loader: 'babel'
+        }, {
+          test: /\.js$/,
+          include: require('path').resolve('src/'),
+          loader: 'isparta'
         }]
       }
     },
