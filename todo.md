@@ -3,6 +3,7 @@
 - handle multiple redirects on the same render tree
 - a11y
 - .dispose() on server side
+- hot swap history objects?
 - test query string matching etc
 - testsssss
 - perfffff
