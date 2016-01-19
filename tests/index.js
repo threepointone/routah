@@ -330,8 +330,6 @@ describe('RouteStack', ()=> {
     expect(node.innerText).toEqual(' yay again! ');
   });
 
-  it('should not setState on unmounted component'); // 'currently fails'; // above set
-
   it('refreshes when the url changes', () => {
     // above set
   });
