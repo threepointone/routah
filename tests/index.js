@@ -128,7 +128,10 @@ describe('Route', () => {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context');
+  it('requires a Router parent / routah context', () => {
+    expect(() => render(<Route/>, node)).toThrow();
+  });
+
   it('prop: children()', () => {
 
     render(<Router>
@@ -218,7 +221,9 @@ describe('Link', () => {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context');
+  it('requires a Router parent / routah context', () => {
+    expect(() => render(<Link/>, node)).toThrow();
+  });
 
   it('prop: to', () => {
     let tree = render(<Router>
@@ -270,7 +275,9 @@ describe('Redirect', ()=> {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context');
+  it('requires a Router parent / routah context', () => {
+    expect(() => render(<Redirect/>, node)).toThrow();
+  });
 
   it('prop: to', () => {
     let h = history('/x');
@@ -287,7 +294,9 @@ describe('RouteStack', ()=> {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context');
+  it('requires a Router parent / routah context', () => {
+    expect(() => render(<RouteStack/>, node)).toThrow();
+  });
 
   it('only accepts <Route/> elements as children', () => {
     expect(() => render(<Router>
@@ -330,8 +339,6 @@ describe('RouteStack', ()=> {
     // above set
   });
 
-
-
   it('prop: notFound', () => {
     render(<Router>
       <RouteStack notFound={() => <div>here!</div>}>
@@ -342,6 +349,8 @@ describe('RouteStack', ()=> {
     </Router>, node);
     expect(node.innerText).toEqual('here!');
   });
+
+  it('cleans up after itself');
 });
 
 describe('util', () => {
