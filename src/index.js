@@ -142,6 +142,7 @@ export class Route extends Component{
   static defaultProps = {
     notFound: () => null,
     passProps: {},
+    children: () => {},
     onMount: () => {},
     onEnter: (l, cb) => cb(),
     onLeave: (l, cb) => cb(),
@@ -215,6 +216,7 @@ export class Route extends Component{
         el = this.props.children(location, history);
       }
     }
+
     return el || this.props.notFound(location);
   }
   componentWillUnmount(){
@@ -271,7 +273,7 @@ export class Link extends Component{
     return <a
       href={h.createHref(this.props.to)}
       {...this.props}
-      className={`${this.props.className} ${active ? this.props.activeClass : ''}`}
+      className={`${this.props.className} ${active ? this.props.activeClass : ''}`.trim()}
       style={{...this.props.style, ...(active ? this.props.activeStyle : {})}}
       onClick={this.onClick}>
       {this.props.children}
@@ -313,7 +315,7 @@ export class RouteStack extends Component{
     notFound: PropTypes.func,
     children(props) {
       return find(Children.toArray(props.children), c => c.type !== Route) ?
-        new Error('<RouteStack/> only accepts <Route/>s as children\n') :
+        new Error('<RouteStack/> only accepts <Route/>s as children.') :
         null;
     }
   };
@@ -329,7 +331,12 @@ export class RouteStack extends Component{
   }
   render(){
     let url = this.context.routah.history.createHref(this.state.location);
-    return find(Children.toArray(this.props.children), c => matches(c.props.path, url) ? c : false) || this.props.notFound();
+    return find(Children.toArray(this.props.children), c => {
+      if (c.type !== Route){
+        throw new Error('<RouteStack> only accepts <Route/> elements as children');
+      }
+      return matches(c.props.path, url) ? c : false;
+    }) || this.props.notFound();
   }
 }
 
