@@ -6,7 +6,7 @@ routah
 `npm install react history@2.0.0-rc2 routah --save`
 
 - heavily inspired by [react-router](https://github.com/rackt/react-router) and [react-motion](https://github.com/chenglou/react-motion)
-- nest `<Route />` elements anywhere in your app
+- render `<Route />` elements anywhere in your app
 - [express](http://expressjs.com/)-style pattern matching
 - server-side friendly
 - more!
@@ -28,7 +28,7 @@ function App(){
     {/* renders when the browser url is /1 */}
     <Route path='/1' component={Page1} />
     {/* and similarly when /2 */}
-    <Route path='/2' component={Page2} props={{more: data}}/>
+    <Route path='/2' component={Page2} passProps={{more: data}}/>
 
     {/* match across paths */}
     <Route path={['/p/:id', 'para/:id']}>{
@@ -56,7 +56,7 @@ ReactDOM.render(<Router><App/></Router>, document.body)
 differences from react-router
 ---
 
-- `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`props` props)
+- `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`passProps` props)
 - `<Route />` elements can be nested anywhere in the app
 - sibling `<Route />` elements don't depend on each other (use `<RouteStack />` for similar behavior)
 - very little work has gone into this (so far)
@@ -82,14 +82,14 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 }</Route>
 
 // or pass the component and optionally props
-<Route path={['/inbox', '/inbox/:id']} component={Inbox} props={{some: data}} />
+<Route path={['/inbox', '/inbox/:id']} component={Inbox} passProps={{some: data}} />
 ```
 
 - `path` - an [express-style](https://github.com/pillarjs/path-to-regexp) path matcher
 - `path` - an array of the above
 - render via `children (location, history)` - a [render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)
 - render via `component` - a `React.Component` which will receive *{location, history}* as props
-- `props` - additional props to transfer when using `component`
+- `passProps` - additional props to transfer when using `component`
 - `onMount (location)`
 - `onEnter (location, callback)`
 - `onLeave (location, callback)`
@@ -115,7 +115,7 @@ Redirect
 
 A `<Redirect to={...} />` triggers a redirect to `to` whenever/wherever rendered.
 ```jsx
-<Route path='/old' component={Redirect}, props={{to: '/new'}} />
+<Route path='/old' component={Redirect} passProps={{to: '/new'}} />
 ```
 
 - `to` - url

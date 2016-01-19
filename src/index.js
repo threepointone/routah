@@ -30,7 +30,7 @@ function currentLocation(h){
   return loc;
 }
 
-function decode_param(val) {
+function decodeParam(val) {
   if (typeof val !== 'string' || val.length === 0) {
     return val;
   }
@@ -61,7 +61,7 @@ function pathMatch(pattern, path){
   for (var i = 1; i < m.length; i++) {
     var key = keys[i - 1];
     var prop = key.name;
-    var val = decode_param(m[i]);
+    var val = decodeParam(m[i]);
 
     if (val !== undefined || !(params::has(prop))) {
       params[prop] = val;
@@ -95,7 +95,8 @@ export class Router extends Component{
   };
   static propTypes = {
     history: PropTypes.object,
-    url: PropTypes.string  // only for server side
+    url: PropTypes.string,  // only for server side
+    children: React.PropTypes.element.isRequired,
   };
   static defaultProps = {
     url: '/'
@@ -112,14 +113,12 @@ export class Router extends Component{
 
     return {
       routah: {
-        history: (this.props::has('history') && this.props.history) || (this.context.routah || {}).history || this.__routah_history__
+        history: (this.props::has('history') ? this.props.history : null) || (this.context.routah || {}).history || this.__routah_history__
       }
     };
   }
   render(){
-    return typeof this.props.children === 'function' ?
-      this.props.children(this.props.history || global.__routah_history__) :
-      this.props.children;
+    return Children.only(this.props.children);
   }
 }
 
@@ -133,16 +132,16 @@ export class Route extends Component{
     path: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
     component: PropTypes.func,
     notFound: PropTypes.func,
-    props: PropTypes.object,
+    passProps: PropTypes.object,
     onMount: PropTypes.func,
-    onLeave: PropTypes.func,
     onEnter: PropTypes.func,
+    onLeave: PropTypes.func,
     onUnload: PropTypes.func,
     children: PropTypes.func
   };
   static defaultProps = {
     notFound: () => null,
-    props: {},
+    passProps: {},
     onMount: () => {},
     onEnter: (l, cb) => cb(),
     onLeave: (l, cb) => cb(),
@@ -209,7 +208,7 @@ export class Route extends Component{
     if (this.state.matches){
       if (this.props.component){
         // components / props flavor
-        el = React.createElement(this.props.component, {location, history, ...this.props.props});
+        el = React.createElement(this.props.component, {location, history, ...this.props.passProps});
       }
       else {
         // render callback
