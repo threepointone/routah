@@ -63,7 +63,7 @@ function pathMatch(pattern, path){
     var prop = key.name;
     var val = decodeParam(m[i]);
 
-    if (val !== undefined || !(params::has(prop))) {
+    if (val !== undefined || !params::has(prop)) {
       params[prop] = val;
     }
   }
@@ -110,7 +110,6 @@ export class Router extends Component{
   };
   __routah_history__ = isBrowser ? global.__routah_history__ : useBeforeUnload(createMemoryHistory)(this.props.url);
   getChildContext(){
-
     return {
       routah: {
         history: (this.props::has('history') ? this.props.history : null) || (this.context.routah || {}).history || this.__routah_history__
@@ -167,16 +166,27 @@ export class Route extends Component{
     });
   };
   componentWillMount(){
-    this.dispose = this.context.routah.history.listen(this.refresh);
+    this.refresh(currentLocation(this.context.routah.history));
 
   }
   componentDidMount(){
     let h = this.context.routah.history;
+    let started = false;
+    this.dispose = h.listen(location => {
+      // discard first response
+      if (!started){
+        started = true;
+        return;
+      }
+      this.refresh(location);
+    });
+
+
     if (matches(this.props.path,  h.createHref(currentLocation(h)))){
       this.props.onMount(currentLocation(h));
     }
 
-    this.disposeBefore = this.context.routah.history.listenBefore((location, callback) => {
+    this.disposeBefore = h.listenBefore((location, callback) => {
       let matchesCurrent = matches(this.props.path,  h.createHref(currentLocation(h)));
       let matchesNext = matches(this.props.path,  h.createHref(location));
       if (!matchesCurrent && matchesNext){
@@ -189,7 +199,7 @@ export class Route extends Component{
       return callback();
     });
 
-    this.disposeUnload = this.context.routah.history.listenBeforeUnload(() => {
+    this.disposeUnload = h.listenBeforeUnload(() => {
       if (matches(this.props.path,  h.createHref(currentLocation(h)))){
         return this.props.onUnload(currentLocation(h));
       }
@@ -263,7 +273,21 @@ export class Link extends Component{
     this.context.routah.history.push(this.props.to);
   };
   componentWillMount(){
-    this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
+    this.setState({
+      location: currentLocation(this.context.routah.history)
+    });
+
+  }
+  componentDidMount(){
+    let started = false;
+    this.dispose = this.context.routah.history.listen(location => {
+      // discard first response
+      if (!started){
+        started = true;
+        return;
+      }
+      this.setState({location});
+    });
   }
 
   render(){
@@ -274,14 +298,12 @@ export class Link extends Component{
       href={h.createHref(this.props.to)}
       {...this.props}
       className={`${this.props.className} ${active ? this.props.activeClass : ''}`.trim()}
-      style={{...this.props.style, ...(active ? this.props.activeStyle : {})}}
+      style={{...this.props.style, ...active ? this.props.activeStyle : {}}}
       onClick={this.onClick}>
       {this.props.children}
     </a>;
   }
-  componentWillMount(){
-    this.dispose = this.context.routah.history.listen(location =>this.setState({location}));
-  }
+
   componentWillUnmount(){
     this.dispose();
     delete this.dispose;
@@ -323,7 +345,20 @@ export class RouteStack extends Component{
     notFound: () => null
   };
   componentWillMount(){
-    this.dispose = this.context.routah.history.listen(location => this.setState({location}));
+    this.setState({
+      location: currentLocation(this.context.routah.history)
+    });
+  }
+  componentDidMount(){
+    let started = false;
+    this.dispose = this.context.routah.history.listen(location => {
+      // discard first response
+      if (!started){
+        started = true;
+        return;
+      }
+      this.setState({location});
+    });
   }
   componentWillUnmount(){
     this.dispose();

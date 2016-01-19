@@ -2,7 +2,7 @@
 
 import React, {Component, PropTypes} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import ReactTestUtils, {findRenderedDOMComponentWithTag, Simulate} from 'react-addons-test-utils';
+import {findRenderedDOMComponentWithTag, Simulate} from 'react-addons-test-utils';
 import {Route, Router, Link, Redirect, RouteStack} from '../src';
 import {createMemoryHistory, useBeforeUnload} from 'history';
 
@@ -212,8 +212,6 @@ describe('Route', () => {
     expect(node.innerText).toEqual('/y');
   });
 
-  it('cleans up after itself');
-
 });
 
 describe('Link', () => {
@@ -266,7 +264,6 @@ describe('Link', () => {
     // previous set
   });
 
-  it('cleans up after itself');
 
 });
 
@@ -350,7 +347,6 @@ describe('RouteStack', ()=> {
     expect(node.innerText).toEqual('here!');
   });
 
-  it('cleans up after itself');
 });
 
 describe('util', () => {
