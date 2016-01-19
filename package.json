@@ -5,7 +5,8 @@
   "main": "./lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": " ./node_modules/.bin/babel-node ./node_modules/.bin/karma start karma.conf.js",
+    "test": " ./node_modules/.bin/babel-node ./node_modules/.bin/karma start karma.conf.js --single-run"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "karma-chrome-launcher": "^0.2.2",
     "karma-expect": "^1.1.1",
     "karma-mocha": "^0.2.1",
+    "karma-mocha-reporter": "^1.1.5",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.4",
     "react": "^0.14.6",

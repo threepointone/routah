@@ -4,6 +4,10 @@ module.exports = function(config){
   config.set({
     browsers: ['Chrome'],
     files: ['./tests/index.js'],
+    reporters: ['mocha'],
+    mochaReporter: {
+      output: 'autowatch'
+    },
     preprocessors: {
       './tests/index.js': ['webpack']
     },
