@@ -1,6 +1,8 @@
 routah
 ---
 
+[work in progress]
+
 `npm install react history@2.0.0-rc2 routah --save`
 
 - heavily inspired by [react-router](https://github.com/rackt/react-router) and [react-motion](https://github.com/chenglou/react-motion)
