@@ -27,7 +27,7 @@ export class Router extends Component{
   };
 
   static defaultProps = {
-    url: '/'
+    url: !isBrowser ? '/' : null
   };
 
   static contextTypes = {
