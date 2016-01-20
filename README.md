@@ -116,7 +116,9 @@ Redirect
 
 A `<Redirect to={...} />` triggers a redirect to `to` whenever/wherever rendered.
 ```jsx
-<Route path='/old' component={Redirect} passProps={{to: '/new'}} />
+<Route path='/old'>{
+  () => <Redirect to='/new'/>
+}<Route>
 ```
 
 - `to` - url
