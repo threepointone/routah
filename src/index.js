@@ -7,11 +7,10 @@ import pathToRegexp from 'path-to-regexp';
 // history utils
 import {createHistory, createMemoryHistory, useBeforeUnload} from 'history';
 
-// setup a hidden singleton history object. a good default.
 const isBrowser = typeof window !== 'undefined';
-if (isBrowser){
-  window.__routah_history__ = window.__routah_history__ || useBeforeUnload(createHistory)();
-}
+
+// setup a hidden singleton history object. a good default.
+const HISTORY = isBrowser ? useBeforeUnload(createHistory)() : null;
 
 const has = {}.hasOwnProperty;
 
@@ -40,7 +39,7 @@ export class Router extends Component{
     routah: PropTypes.object.isRequired
   };
 
-  __routah_history__ = isBrowser ? global.__routah_history__ : useBeforeUnload(createMemoryHistory)(this.props.url);
+  __routah_history__ = isBrowser ? HISTORY : useBeforeUnload(createMemoryHistory)(this.props.url);
 
   getChildContext(){
     return {
