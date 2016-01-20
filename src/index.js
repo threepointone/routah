@@ -149,7 +149,7 @@ export class Route extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
-  refresh = (location = currentLocation(this.context.routah.history), props = this.props) => {
+  refresh = (location = this.state.location, props = this.props) => {
     let doesMatch = true, match;
     if (props.path){
       match = matches(props.path, this.context.routah.history.createHref(location));
@@ -181,12 +181,12 @@ export class Route extends Component{
     });
 
 
-    if (matches(this.props.path,  h.createHref(currentLocation(h)))){
-      this.props.onMount(currentLocation(h));
+    if (matches(this.props.path,  h.createHref(this.state.location))){
+      this.props.onMount(this.state.location);
     }
 
     this.disposeBefore = h.listenBefore((location, callback) => {
-      let matchesCurrent = matches(this.props.path,  h.createHref(currentLocation(h)));
+      let matchesCurrent = matches(this.props.path,  h.createHref(this.state.location));
       let matchesNext = matches(this.props.path,  h.createHref(location));
       if (!matchesCurrent && matchesNext){
         return this.props.onEnter(location, callback);
@@ -204,8 +204,8 @@ export class Route extends Component{
 
     if (h.listenBeforeUnload){
       this.disposeUnload = h.listenBeforeUnload(() => {
-        if (matches(this.props.path,  h.createHref(currentLocation(h)))){
-          return this.props.onUnload(currentLocation(h));
+        if (matches(this.props.path,  h.createHref(this.state.location))){
+          return this.props.onUnload(this.state.location);
         }
       });
     }
@@ -379,7 +379,7 @@ export class RouteStack extends Component{
         throw new Error('<RouteStack> only accepts <Route/> elements as children');
       }
       return matches(c.props.path, url) ? c : false;
-    }) || this.props.notFound();
+    }) || this.props.notFound(this.state.location);
   }
 }
 

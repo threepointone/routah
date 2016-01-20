@@ -95,7 +95,7 @@ A `<Route path={...}>` element renders only when the current url matches the `pa
 - `onEnter (location, callback)`
 - `onLeave (location, callback)`
 - `onUnload (location)`
-- `notFound ()`  - a render-callback when `path` doesn't match. defaults to `() => null`
+- `notFound (location)`  - a render-callback when `path` doesn't match. defaults to `() => null`
 
 Link
 ---
@@ -137,5 +137,5 @@ This emulates a behavior from react-router - given one or more `<Routes/>`, rend
 ```
 
 - `children` - one or more `<Route/>` elements
-- `notFound ()` - when no child matches. good for 404s!
+- `notFound (location)` - when no child matches. good for 404s!
 
