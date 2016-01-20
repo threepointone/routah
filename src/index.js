@@ -277,16 +277,15 @@ export class Route extends Component{
   render(){
 
     let {location} = this.state;
-    let {history} = this.context.routah;
     let el;
     if (this.state.matches){
       if (this.props.component){
         // components / props flavor
-        el = React.createElement(this.props.component, {location, history, ...this.props.passProps});
+        el = React.createElement(this.props.component, {...this.props.passProps, location});
       }
       else {
         // render callback
-        el = this.props.children(location, history);
+        el = this.props.children(location);
       }
     }
 
@@ -348,7 +347,7 @@ export class Link extends Component{
       href={h.createHref(this.props.to)}
       {...this.props}
       className={`${this.props.className} ${active ? this.props.activeClass : ''}`.trim()}
-      style={{...this.props.style, ...active ? this.props.activeStyle : {}}}
+      style={active ? {...this.props.style, ...this.props.activeStyle} : this.props.style}
       onClick={this.onClick}>
       {this.props.children}
     </a>;
