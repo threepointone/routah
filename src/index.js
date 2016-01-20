@@ -30,6 +30,40 @@ function currentLocation(h){
   return loc;
 }
 
+// decorator for a component to hook up to the history object
+// to get location passed to it as a prop every time it changes
+// not really a public api, though we should probably export it for testability
+function connectHistory(Target){
+  return class History extends Component{
+    static displayName = 'Ó:' + Target.displayName;
+    static contextTypes = {
+      routah: PropTypes.object
+    };
+    state = {
+      location: currentLocation(this.context.routah.history)
+    };
+    componentDidMount(){
+      let started = false;
+      this.dispose = this.context.routah.history.listen(location => {
+        // discard first response
+        if (!started){
+          started = true;
+          return;
+        }
+        this.setState({location});
+      });
+    }
+    componentWillUnmount(){
+      this.dispose();
+      delete this.dispose;
+    }
+    render(){
+      return React.createElement(Target, {...this.props, location: this.state.location}, this.props.children);
+    }
+  };
+}
+
+
 function decodeParam(val) {
   if (typeof val !== 'string' || val.length === 0) {
     return val;
@@ -90,9 +124,6 @@ function matches(patterns, url){
 // </Router>
 // todo - use a default history singleton in browser
 export class Router extends Component{
-  state = {
-    location: null
-  };
   static propTypes = {
     history: PropTypes.object,
     url: PropTypes.string,  // only for server side
@@ -112,7 +143,10 @@ export class Router extends Component{
   getChildContext(){
     return {
       routah: {
-        history: (this.props::has('history') ? this.props.history : null) || (this.context.routah || {}).history || this.__routah_history__
+        history:
+          (this.props::has('history') ? this.props.history : null) ||
+          (this.context.routah || {}).history
+          || this.__routah_history__
       }
     };
   }
@@ -126,6 +160,7 @@ export class Router extends Component{
 // `<Route path={...} .../>` will render only when `path` matches the current browser url
 // that's it.
 // we introduce some lifecycle hooks and customizability for ease of dev
+@connectHistory
 export class Route extends Component{
   static propTypes = {
     path: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
@@ -149,10 +184,13 @@ export class Route extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
-  refresh = (location = this.state.location, props = this.props) => {
+  state = {
+    location: this.props.location
+  };
+  refresh = (location = this.state.location, path = this.props.path) => {
     let doesMatch = true, match;
-    if (props.path){
-      match = matches(props.path, this.context.routah.history.createHref(location));
+    if (path){
+      match = matches(path, this.context.routah.history.createHref(location));
       doesMatch = !!match;
     }
 
@@ -165,21 +203,10 @@ export class Route extends Component{
     });
   };
   componentWillMount(){
-    this.refresh(currentLocation(this.context.routah.history));
-
+    this.refresh();
   }
   componentDidMount(){
     let h = this.context.routah.history;
-    let started = false;
-    this.dispose = h.listen(location => {
-      // discard first response
-      if (!started){
-        started = true;
-        return;
-      }
-      this.refresh(location);
-    });
-
 
     if (matches(this.props.path,  h.createHref(this.state.location))){
       this.props.onMount(this.state.location);
@@ -211,10 +238,7 @@ export class Route extends Component{
     }
   }
   componentWillReceiveProps(next){
-    if (next.path !== this.props.path){
-      // todo - fire onenter/onleave hooks here too?
-      this.refresh(undefined, next);
-    }
+    this.refresh(next.location, next.path);
   }
   render(){
 
@@ -235,21 +259,19 @@ export class Route extends Component{
     return el || this.props.notFound(location);
   }
   componentWillUnmount(){
-    this.dispose();
     this.disposeBefore();
-    delete this.dispose;
     delete this.disposeBefore;
     if (this.disposeUnload){
       this.disposeUnload();
       delete this.disposeUnload;
     }
-
   }
 }
 
 
 // a useful replacement for <a> elements.
 // includes clickjacking, and custom styling when 'active',
+@connectHistory
 export class Link extends Component{
   static contextTypes = {
     routah: PropTypes.object
@@ -271,36 +293,16 @@ export class Link extends Component{
     activeStyle: {}
   };
 
-  state = {
-    location: '/'
-  };
 
   onClick = e => {
     e.preventDefault();
     this.props.onClick(e);
     this.context.routah.history.push(this.props.to);
   };
-  componentWillMount(){
-    this.setState({
-      location: currentLocation(this.context.routah.history)
-    });
-
-  }
-  componentDidMount(){
-    let started = false;
-    this.dispose = this.context.routah.history.listen(location => {
-      // discard first response
-      if (!started){
-        started = true;
-        return;
-      }
-      this.setState({location});
-    });
-  }
-
   render(){
     let h = this.context.routah.history;
-    let active = h.createHref(this.props.to) === h.createHref(this.state.location);
+    let activeHref = h.createHref(this.props.to);
+    let active = activeHref === h.createHref(this.props.location);
 
     return <a
       href={h.createHref(this.props.to)}
@@ -312,21 +314,16 @@ export class Link extends Component{
     </a>;
   }
 
-  componentWillUnmount(){
-    this.dispose();
-    delete this.dispose;
-  }
 }
 
 
 // `<Redirect to={...}/>` simply triggers `history.push()` when rendered
 // todo - handle server side redirect
 export class Redirect extends Component{
-
   static contextTypes = {
     routah: PropTypes.object
   };
-  componentDidMount(){
+  componentWillMount(){
     this.context.routah.history.push(this.props.to);
   }
   render(){
@@ -336,11 +333,11 @@ export class Redirect extends Component{
 
 
 // a la react-router, only the first-matching `<Route/>` child is rendered.
+@connectHistory
 export class RouteStack extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
-
   static propTypes = {
     notFound: PropTypes.func,
     children(props) {
@@ -352,34 +349,14 @@ export class RouteStack extends Component{
   static defaultProps = {
     notFound: () => null
   };
-  componentWillMount(){
-    this.setState({
-      location: currentLocation(this.context.routah.history)
-    });
-  }
-  componentDidMount(){
-    let started = false;
-    this.dispose = this.context.routah.history.listen(location => {
-      // discard first response
-      if (!started){
-        started = true;
-        return;
-      }
-      this.setState({location});
-    });
-  }
-  componentWillUnmount(){
-    this.dispose();
-    delete this.dispose;
-  }
   render(){
-    let url = this.context.routah.history.createHref(this.state.location);
+    let url = this.context.routah.history.createHref(this.props.location);
     return find(Children.toArray(this.props.children), c => {
       if (c.type !== Route){
         throw new Error('<RouteStack> only accepts <Route/> elements as children');
       }
       return matches(c.props.path, url) ? c : false;
-    }) || this.props.notFound(this.state.location);
+    }) || this.props.notFound(this.props.location);
   }
 }
 
