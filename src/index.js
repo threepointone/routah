@@ -144,8 +144,7 @@ export class Route extends Component{
     children: () => {},
     onMount: () => {},
     onEnter: (l, cb) => cb(),
-    onLeave: (l, cb) => cb(),
-    onUnload: () => {}
+    onLeave: (l, cb) => cb()
   };
   static contextTypes = {
     routah: PropTypes.object
@@ -199,11 +198,17 @@ export class Route extends Component{
       return callback();
     });
 
-    this.disposeUnload = h.listenBeforeUnload(() => {
-      if (matches(this.props.path,  h.createHref(currentLocation(h)))){
-        return this.props.onUnload(currentLocation(h));
-      }
-    });
+    if (this.props.onUnload && !h.listenBeforeUnload){
+      throw new Error('you have an unload listener, but haven\'t wrapped your history object with useBeforeUnload');
+    }
+
+    if (h.listenBeforeUnload){
+      this.disposeUnload = h.listenBeforeUnload(() => {
+        if (matches(this.props.path,  h.createHref(currentLocation(h)))){
+          return this.props.onUnload(currentLocation(h));
+        }
+      });
+    }
   }
   componentWillReceiveProps(next){
     if (next.path !== this.props.path){
@@ -232,10 +237,13 @@ export class Route extends Component{
   componentWillUnmount(){
     this.dispose();
     this.disposeBefore();
-    this.disposeUnload();
     delete this.dispose;
     delete this.disposeBefore;
-    delete this.disposeUnload;
+    if (this.disposeUnload){
+      this.disposeUnload();
+      delete this.disposeUnload;
+    }
+
   }
 }
 

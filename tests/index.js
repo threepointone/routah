@@ -4,15 +4,11 @@ import React, {Component, PropTypes} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import {findRenderedDOMComponentWithTag, Simulate} from 'react-addons-test-utils';
 import {Route, Router, Link, Redirect, RouteStack} from '../src';
-import {createMemoryHistory, useBeforeUnload} from 'history';
+import {createMemoryHistory} from 'history';
 
 import expect from 'expect';
 import expectJSX from 'expect-jsx';
 expect.extend(expectJSX);
-
-function history(...args){
-  return useBeforeUnload(createMemoryHistory)(...args);
-}
 
 
 describe('Router', () => {
@@ -70,7 +66,7 @@ describe('Router', () => {
         return null;
       }
     }
-    let h = history('/123');
+    let h = createMemoryHistory('/123');
     render(<Router history={h}>
       <App />
     </Router>, node);
@@ -90,7 +86,7 @@ describe('Router', () => {
   });
 
   it('can override context when nested', () => {
-    let h = history('/');
+    let h = createMemoryHistory('/');
 
     class App extends Component{
       static contextTypes = {
@@ -142,7 +138,7 @@ describe('Route', () => {
   });
 
   it('renders with the current url', () => {
-    render(<Router history={history('/babbabooey')}>
+    render(<Router history={createMemoryHistory('/babbabooey')}>
       <Route>{ location => <div>{location.pathname}</div> }</Route>
     </Router>, node);
 
@@ -155,7 +151,7 @@ describe('Route', () => {
         return <div>{this.props.location.pathname}:{this.props.x}</div>;
       }
     }
-    render(<Router history={history('/babba/booey')}>
+    render(<Router history={createMemoryHistory('/babba/booey')}>
       <div>
         {/* renders with current location */}
         <Route>{ location => <div>{location.pathname}</div>}</Route>
@@ -205,7 +201,7 @@ describe('Route', () => {
   it('prop: onMount onEnter onLeave onUnload');
 
   it('refreshes when the url changes', () => {
-    let h = history('/x');
+    let h = createMemoryHistory('/x');
     render(<Router history={h}><Route>{l => <div>{l.pathname}</div>}</Route></Router>, node);
     expect(node.innerText).toEqual('/x');
     h.push('/y');
@@ -232,7 +228,7 @@ describe('Link', () => {
   });
 
   it('prop: onClick className style', done => {
-    let h = history();
+    let h = createMemoryHistory();
     let tree = render(<Router history={h}>
       <Link to='/x' className='some thing here' onClick={e => (e.preventDefault(), done())}>go where?</Link>
     </Router>, node);
@@ -244,7 +240,7 @@ describe('Link', () => {
   });
 
   it('prop: activeStyle activeClass', () => {
-    let h = history();
+    let h = createMemoryHistory();
     let tree = render(<Router history={h}>
       <Link to='/x' activeClass='gogogo' style={{zIndex: 0}} activeStyle={{zIndex: 10}}>go where?</Link>
     </Router>, node);
@@ -277,7 +273,7 @@ describe('Redirect', ()=> {
   });
 
   it('prop: to', () => {
-    let h = history('/x');
+    let h = createMemoryHistory('/x');
     render(<Router history={h}>
       <Redirect to={'/y'} />
     </Router>, node);
@@ -317,7 +313,7 @@ describe('RouteStack', ()=> {
   });
 
   it('only renders the first matching <Route/>', () => {
-    let h = history('/3');
+    let h = createMemoryHistory('/3');
     render(<Router history={h}>
       <RouteStack>
         <Route path='/xyz'>{() => <span> yay again! </span> }</Route>
