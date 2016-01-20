@@ -3,7 +3,7 @@
 import React, {Component, PropTypes} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import {findRenderedDOMComponentWithTag, Simulate} from 'react-addons-test-utils';
-import {Route, Router, Link, Redirect, RouteStack} from '../src';
+import {Route, Router, Link, Redirect, RouteStack, connectHistory} from '../src';
 import {createMemoryHistory} from 'history';
 
 import expect from 'expect';
@@ -115,6 +115,59 @@ describe('Router', () => {
     render(<Router>
       <App/>
     </Router>, node);
+  });
+
+});
+
+describe('@connectHistory', () => {
+  let node;
+  beforeEach(() => node = document.createElement('div'));
+  afterEach(() => unmountComponentAtNode(node));
+
+  it('expects context.routah', () => {
+    @connectHistory
+    class X extends Component{
+      render(){
+        return null;
+      }
+    }
+
+    expect(() => render(<X/>, node)).toThrow();
+
+    node = document.createElement('div');
+    unmountComponentAtNode(node);
+
+    expect(() => render(<Router><X/></Router>, node)).toNotThrow();
+
+  });
+  it('receives the current location', () => {
+    @connectHistory
+    class X extends Component{
+      render(){
+        return <div>{this.props.location.pathname}</div>;
+      }
+    }
+
+    let h = createMemoryHistory('/babbabooey');
+
+    render(<Router history={h}><X/></Router>, node);
+    expect(node.innerText).toEqual('/babbabooey');
+
+  });
+
+  it('refreshes when the url changes', () => {
+    @connectHistory
+    class X extends Component{
+      render(){
+        return <div>{this.props.location.pathname}</div>;
+      }
+    }
+
+    let h = createMemoryHistory('/babbabooey');
+
+    render(<Router history={h}><X/></Router>, node);
+    h.push('/hueylewis');
+    expect(node.innerText).toEqual('/hueylewis');
   });
 
 });

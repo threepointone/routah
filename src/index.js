@@ -132,8 +132,8 @@ function matches(patterns, url){
 
 // decorator for a component to hook up to the history object
 // to get location passed to it as a prop every time it changes
-// not really a public api, though we should probably export it for testability
-function connectHistory(Target){
+// not really a public api, though we export it for testability
+export function connectHistory(Target){
   return class History extends Component{
     static displayName = 'Ó:' + Target.displayName;
 
@@ -144,6 +144,12 @@ function connectHistory(Target){
     state = {
       location: currentLocation(this.context.routah.history)  // start with the initial location
     };
+
+    componentWillMount(){
+      if (!this.context.routah){
+        throw new Error('did you forget a parent <Router>?');
+      }
+    }
 
     componentDidMount(){
       let started = false;
