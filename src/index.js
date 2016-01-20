@@ -60,7 +60,7 @@ export class Router extends Component{
 
 // for an array, run fn on every element and break on the first truthy return value
 function find(arr, fn){
-  for (var i = 0; i < arr.length; i++){
+  for (let i = 0; i < arr.length; i++){
     let res = fn(arr[i]);
     if (res){
       return res;
@@ -104,10 +104,10 @@ function pathMatch(pattern, path){
   }
   _path = m[0];
 
-  for (var i = 1; i < m.length; i++) {
-    var key = keys[i - 1];
-    var prop = key.name;
-    var val = decodeParam(m[i]);
+  for (let i = 1; i < m.length; i++) {
+    let key = keys[i - 1];
+    let prop = key.name;
+    let val = decodeParam(m[i]);
 
     if (val !== undefined || !params::has(prop)) {
       params[prop] = val;
