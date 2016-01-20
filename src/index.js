@@ -1,8 +1,10 @@
+// the usual suspects
 import React, {Component, Children, PropTypes} from 'react';
 
-// express.js` path matching
+// express.js path matching
 import pathToRegexp from 'path-to-regexp';
 
+// history utils
 import {createHistory, createMemoryHistory, useBeforeUnload} from 'history';
 
 // setup a hidden singleton history object. a good default.
@@ -13,9 +15,54 @@ if (isBrowser){
 
 const has = {}.hasOwnProperty;
 
+// top level component. pass in a history object.
+// <Router history={history}>
+//   <App/>
+// </Router>
+// todo - use a default history singleton in browser
+export class Router extends Component{
+  static propTypes = {
+    history: PropTypes.object,
+    url: PropTypes.string,  // only for server side
+    children: React.PropTypes.element.isRequired,
+  };
+
+  static defaultProps = {
+    url: '/'
+  };
+
+  static contextTypes = {
+    // discover if we're nested in abother <Router/>
+    routah: PropTypes.object
+  };
+
+  static childContextTypes = {
+    routah: PropTypes.object.isRequired
+  };
+
+  __routah_history__ = isBrowser ? global.__routah_history__ : useBeforeUnload(createMemoryHistory)(this.props.url);
+
+  getChildContext(){
+    return {
+      routah: {
+        history:
+          (this.props::has('history') ? this.props.history : null) ||
+          (this.context.routah || {}).history
+          || this.__routah_history__
+      }
+    };
+  }
+
+  render(){
+    return Children.only(this.props.children);
+  }
+}
+
+
+// for an array, run fn on every element and break on the first truthy return value
 function find(arr, fn){
-  for (let el of arr){
-    let res = fn(el);
+  for (var i = 0; i < arr.length; i++){
+    let res = fn(arr[i]);
     if (res){
       return res;
     }
@@ -24,45 +71,12 @@ function find(arr, fn){
 
 
 // a helper to get the current location from the history object
+// (this was way more useful before the refactor)
 function currentLocation(h){
   let loc;
   h.listen(location => loc = location)();
   return loc;
 }
-
-// decorator for a component to hook up to the history object
-// to get location passed to it as a prop every time it changes
-// not really a public api, though we should probably export it for testability
-function connectHistory(Target){
-  return class History extends Component{
-    static displayName = 'Ó:' + Target.displayName;
-    static contextTypes = {
-      routah: PropTypes.object
-    };
-    state = {
-      location: currentLocation(this.context.routah.history)
-    };
-    componentDidMount(){
-      let started = false;
-      this.dispose = this.context.routah.history.listen(location => {
-        // discard first response
-        if (!started){
-          started = true;
-          return;
-        }
-        this.setState({location});
-      });
-    }
-    componentWillUnmount(){
-      this.dispose();
-      delete this.dispose;
-    }
-    render(){
-      return React.createElement(Target, {...this.props, location: this.state.location}, this.props.children);
-    }
-  };
-}
-
 
 function decodeParam(val) {
   if (typeof val !== 'string' || val.length === 0) {
@@ -80,7 +94,6 @@ function decodeParam(val) {
     throw err;
   }
 }
-
 
 
 // pattern matching for urls
@@ -102,10 +115,10 @@ function pathMatch(pattern, path){
     }
   }
   return params;
-
 }
 
 
+// given pattern | [pattern] and a url, tell if pattern matches
 function matches(patterns, url){
   if (!patterns){
     return true;
@@ -118,41 +131,44 @@ function matches(patterns, url){
 }
 
 
-// top level component. pass in a history object.
-// <Router history={history}>
-//   <App/>
-// </Router>
-// todo - use a default history singleton in browser
-export class Router extends Component{
-  static propTypes = {
-    history: PropTypes.object,
-    url: PropTypes.string,  // only for server side
-    children: React.PropTypes.element.isRequired,
-  };
-  static defaultProps = {
-    url: '/'
-  };
-  static contextTypes = {
-    // discover if we're nested in abother <Router/>
-    routah: PropTypes.object
-  };
-  static childContextTypes = {
-    routah: PropTypes.object.isRequired
-  };
-  __routah_history__ = isBrowser ? global.__routah_history__ : useBeforeUnload(createMemoryHistory)(this.props.url);
-  getChildContext(){
-    return {
-      routah: {
-        history:
-          (this.props::has('history') ? this.props.history : null) ||
-          (this.context.routah || {}).history
-          || this.__routah_history__
-      }
+// decorator for a component to hook up to the history object
+// to get location passed to it as a prop every time it changes
+// not really a public api, though we should probably export it for testability
+function connectHistory(Target){
+  return class History extends Component{
+    static displayName = 'Ó:' + Target.displayName;
+
+    static contextTypes = {
+      routah: PropTypes.object
     };
-  }
-  render(){
-    return Children.only(this.props.children);
-  }
+
+    state = {
+      location: currentLocation(this.context.routah.history)  // start with the initial location
+    };
+
+    componentDidMount(){
+      let started = false;
+      this.dispose = this.context.routah.history.listen(location => {
+        // discard first (sync) response since we already have it
+        if (!started){
+          started = true;
+          return;
+        }
+        this.setState({location});
+      });
+    }
+
+    componentWillUnmount(){
+      // clean up
+      this.dispose();
+      delete this.dispose;
+    }
+
+    render(){
+      // add location to originally passed props, and send down
+      return React.createElement(Target, {...this.props, location: this.state.location}, this.props.children);
+    }
+  };
 }
 
 
@@ -163,16 +179,24 @@ export class Router extends Component{
 @connectHistory
 export class Route extends Component{
   static propTypes = {
+    // path | [path], where path follows [path-to-regexp](https://github.com/pillarjs/path-to-regexp)
     path: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    // a render callback
+    children: PropTypes.func,
+    // an alternative to the render callback
     component: PropTypes.func,
-    notFound: PropTypes.func,
     passProps: PropTypes.object,
+
+    // hooks
     onMount: PropTypes.func,
     onEnter: PropTypes.func,
     onLeave: PropTypes.func,
     onUnload: PropTypes.func,
-    children: PropTypes.func
+
+    // render when nothing matches
+    notFound: PropTypes.func
   };
+
   static defaultProps = {
     notFound: () => null,
     passProps: {},
@@ -181,37 +205,43 @@ export class Route extends Component{
     onEnter: (l, cb) => cb(),
     onLeave: (l, cb) => cb()
   };
+
   static contextTypes = {
     routah: PropTypes.object
   };
-  state = {
-    location: this.props.location
-  };
-  refresh = (location = this.state.location, path = this.props.path) => {
+
+  // return an enhanced location object
+  resolve = (location, path) => {
     let doesMatch = true, match;
     if (path){
+      // pull out params etc
       match = matches(path, this.context.routah.history.createHref(location));
       doesMatch = !!match;
     }
 
-    this.setState({
+    return {
       location: {
         ...location,
         params: match || {}
       },
       matches: doesMatch
-    });
+    };
   };
-  componentWillMount(){
-    this.refresh();
-  }
+
+  // start with initial data
+  state = this.resolve(this.props.location, this.props.path);
+
   componentDidMount(){
     let h = this.context.routah.history;
 
+    // hooks
+
+    // onMount
     if (matches(this.props.path,  h.createHref(this.state.location))){
       this.props.onMount(this.state.location);
     }
 
+    // onEnter / onLeave
     this.disposeBefore = h.listenBefore((location, callback) => {
       let matchesCurrent = matches(this.props.path,  h.createHref(this.state.location));
       let matchesNext = matches(this.props.path,  h.createHref(location));
@@ -225,6 +255,7 @@ export class Route extends Component{
       return callback();
     });
 
+    // onUnload
     if (this.props.onUnload && !h.listenBeforeUnload){
       throw new Error('you have an unload listener, but haven\'t wrapped your history object with useBeforeUnload');
     }
@@ -237,9 +268,12 @@ export class Route extends Component{
       });
     }
   }
+
   componentWillReceiveProps(next){
-    this.refresh(next.location, next.path);
+    // refresh on new location / path
+    this.setState(this.resolve(next.location, next.path));
   }
+
   render(){
 
     let {location} = this.state;
@@ -258,7 +292,9 @@ export class Route extends Component{
 
     return el || this.props.notFound(location);
   }
+
   componentWillUnmount(){
+    // cleanup
     this.disposeBefore();
     delete this.disposeBefore;
     if (this.disposeUnload){
@@ -270,17 +306,21 @@ export class Route extends Component{
 
 
 // a useful replacement for <a> elements.
-// includes clickjacking, and custom styling when 'active',
+// includes clickjacking, and custom class/styling when 'active',
 @connectHistory
 export class Link extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
+
   static propTypes = {
+    // a location descriptor, via rackt/history
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onClick: PropTypes.func,
     className: PropTypes.string,
     style: PropTypes.object,
+    // when 'active', ie - on the same page
+    // todo - ignore certain query params when comparing
     activeClass: PropTypes.string,
     activeStyle: PropTypes.object
   };
@@ -288,17 +328,17 @@ export class Link extends Component{
   static defaultProps = {
     onClick: () => {},
     className: '',
-    activeClass: 'active',
+    activeClass: 'active',  // convenient
     style: {},
     activeStyle: {}
   };
-
 
   onClick = e => {
     e.preventDefault();
     this.props.onClick(e);
     this.context.routah.history.push(this.props.to);
   };
+
   render(){
     let h = this.context.routah.history;
     let activeHref = h.createHref(this.props.to);
@@ -323,9 +363,12 @@ export class Redirect extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
+
   componentWillMount(){
+    // calling it here ensures it'll be 'called' on server side as well
     this.context.routah.history.push(this.props.to);
   }
+
   render(){
     return null;
   }
@@ -338,17 +381,21 @@ export class RouteStack extends Component{
   static contextTypes = {
     routah: PropTypes.object
   };
+
   static propTypes = {
     notFound: PropTypes.func,
     children(props) {
+      // ensure children are only <Route/>s
       return find(Children.toArray(props.children), c => c.type !== Route) ?
         new Error('<RouteStack/> only accepts <Route/>s as children.') :
         null;
     }
   };
+
   static defaultProps = {
     notFound: () => null
   };
+
   render(){
     let url = this.context.routah.history.createHref(this.props.location);
     return find(Children.toArray(this.props.children), c => {
