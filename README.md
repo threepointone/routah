@@ -9,6 +9,7 @@ routah
 - render `<Route />` elements anywhere in your app
 - [express](http://expressjs.com/)-style pattern matching
 - server-side friendly
+- tests
 - more!
 
 ```jsx
