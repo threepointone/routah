@@ -345,11 +345,11 @@ export class Link extends Component{
 
   render(){
     let h = this.context.routah.history;
-    let activeHref = h.createHref(this.props.to);
-    let active = activeHref === h.createHref(this.props.location);
+    let href = h.createHref(this.props.to);
+    let active = href === h.createHref(this.props.location);
 
     return <a
-      href={h.createHref(this.props.to)}
+      href={href}
       {...this.props}
       className={`${this.props.className} ${active ? this.props.activeClass : ''}`.trim()}
       style={active ? {...this.props.style, ...this.props.activeStyle} : this.props.style}
