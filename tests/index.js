@@ -16,14 +16,13 @@ describe('Router', () => {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('will introduce a `routah` context', done => {
+  it('will introduce a `history` context', done => {
     class App extends Component{
       static contextTypes = {
-        routah: PropTypes.object
+        history: PropTypes.object
       };
       componentDidMount(){
-        expect(this.context.routah).toExist();
-        expect(this.context.routah.history).toExist();
+        expect(this.context.history).toExist();
         done();
       }
       render(){
@@ -39,10 +38,10 @@ describe('Router', () => {
   it('prop: default history object', () => {
     class App extends Component{
       static contextTypes = {
-        routah: PropTypes.object
+        history: PropTypes.object
       };
       componentDidMount(){
-        this.context.routah.history.listen(l => expect(l.pathname).toEqual(window.location.pathname))();
+        this.context.history.listen(l => expect(l.pathname).toEqual(window.location.pathname))();
       }
       render(){
         return null;
@@ -57,10 +56,10 @@ describe('Router', () => {
   it('prop: custom history object', () => {
     class App extends Component{
       static contextTypes = {
-        routah: PropTypes.object
+        history: PropTypes.object
       };
       componentDidMount(){
-        this.context.routah.history.listen(l => expect(l.pathname).toEqual('/123'))();
+        this.context.history.listen(l => expect(l.pathname).toEqual('/123'))();
       }
       render(){
         return null;
@@ -90,19 +89,19 @@ describe('Router', () => {
 
     class App extends Component{
       static contextTypes = {
-        routah: PropTypes.object
+        history: PropTypes.object
       };
       render(){
         return <div>
-          <Router history={h}><Inner onCtx={ctx => expect(ctx.routah.history).toEqual(h)}/></Router>
-          <Inner onCtx={ctx => expect(ctx.routah.history).toEqual(this.context.routah.history)} />
+          <Router history={h}><Inner onCtx={ctx => expect(ctx.history).toEqual(h)}/></Router>
+          <Inner onCtx={ctx => expect(ctx.history).toEqual(this.context.history)} />
         </div>;
       }
     }
 
     class Inner extends Component{
       static contextTypes = {
-        routah: PropTypes.object
+        history: PropTypes.object
       };
       componentDidMount(){
         this.props.onCtx(this.context);
@@ -124,7 +123,7 @@ describe('@connectHistory', () => {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('expects context.routah', () => {
+  it('expects context.history', () => {
     @connectHistory
     class X extends Component{
       render(){
@@ -177,7 +176,7 @@ describe('Route', () => {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context', () => {
+  it('requires a Router parent / history context', () => {
     expect(() => render(<Route/>, node)).toThrow();
   });
 
@@ -268,7 +267,7 @@ describe('Link', () => {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context', () => {
+  it('requires a Router parent / history context', () => {
     expect(() => render(<Link/>, node)).toThrow();
   });
 
@@ -321,7 +320,7 @@ describe('Redirect', ()=> {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context', () => {
+  it('requires a Router parent / history context', () => {
     expect(() => render(<Redirect/>, node)).toThrow();
   });
 
@@ -340,7 +339,7 @@ describe('RouteStack', ()=> {
   beforeEach(() => node = document.createElement('div'));
   afterEach(() => unmountComponentAtNode(node));
 
-  it('requires a Router parent / routah context', () => {
+  it('requires a Router parent / history context', () => {
     expect(() => render(<RouteStack/>, node)).toThrow();
   });
 
@@ -393,7 +392,6 @@ describe('RouteStack', ()=> {
     </Router>, node);
     expect(node.innerText).toEqual('here!');
   });
-
 });
 
 describe('util', () => {

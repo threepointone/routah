@@ -30,24 +30,21 @@ export class Router extends Component{
   };
 
   static contextTypes = {
-    // discover if we're nested in abother <Router/>
-    routah: PropTypes.object
+    // discover if we're nested in abother <Router/> / some other provider
+    history: PropTypes.object
   };
 
   static childContextTypes = {
-    routah: PropTypes.object.isRequired
+    history: PropTypes.object.isRequired
   };
   // default history. on server, this is a new instance with every element
-  __routah_history__ = isBrowser ? HISTORY : useBeforeUnload(createMemoryHistory)(this.props.url);
+  __history__ = isBrowser ? HISTORY : useBeforeUnload(createMemoryHistory)(this.props.url);
 
   getChildContext(){
     return {
-      routah: {
-        history:
-          this.props.history ||
-          (this.context.routah || {}).history ||
-          this.__routah_history__
-      }
+      history: this.props.history ||
+        this.context.history ||
+        this.__history__
     };
   }
 
@@ -137,22 +134,22 @@ export function connectHistory(Target){
     static displayName = 'Ó:' + Target.displayName;
 
     static contextTypes = {
-      routah: PropTypes.object
+      history: PropTypes.object
     };
 
     state = {
-      location: currentLocation(this.context.routah.history)  // start with the initial location
+      location: currentLocation(this.context.history)  // start with the initial location
     };
 
     componentWillMount(){
-      if (!this.context.routah){
+      if (!this.context.history){
         throw new Error('did you forget a parent <Router>?');
       }
     }
 
     componentDidMount(){
       let started = false;
-      this.dispose = this.context.routah.history.listen(location => {
+      this.dispose = this.context.history.listen(location => {
         // discard first (sync) response since we already have it
         if (!started){
           started = true;
@@ -211,7 +208,7 @@ export class Route extends Component{
   };
 
   static contextTypes = {
-    routah: PropTypes.object
+    history: PropTypes.object
   };
 
   // start with initial data
@@ -222,7 +219,7 @@ export class Route extends Component{
     let doesMatch = true, match;
     if (path){
       // pull out params etc
-      match = matches(path, this.context.routah.history.createHref(location));
+      match = matches(path, this.context.history.createHref(location));
       doesMatch = !!match;
     }
 
@@ -236,7 +233,7 @@ export class Route extends Component{
   }
 
   componentDidMount(){
-    let h = this.context.routah.history;
+    let h = this.context.history;
 
     // hooks
 
@@ -313,7 +310,7 @@ export class Route extends Component{
 @connectHistory
 export class Link extends Component{
   static contextTypes = {
-    routah: PropTypes.object
+    history: PropTypes.object
   };
 
   static propTypes = {
@@ -339,11 +336,11 @@ export class Link extends Component{
   onClick = e => {
     e.preventDefault();
     this.props.onClick(e);
-    this.context.routah.history.push(this.props.to);
+    this.context.history.push(this.props.to);
   };
 
   render(){
-    let h = this.context.routah.history;
+    let h = this.context.history;
     let href = h.createHref(this.props.to);
     let active = href === h.createHref(this.props.location);
 
@@ -364,12 +361,12 @@ export class Link extends Component{
 // todo - handle server side redirect
 export class Redirect extends Component{
   static contextTypes = {
-    routah: PropTypes.object
+    history: PropTypes.object
   };
 
   componentWillMount(){
     // calling it here ensures it'll be 'called' on server side as well
-    this.context.routah.history.push(this.props.to);
+    this.context.history.push(this.props.to);
   }
 
   render(){
@@ -382,7 +379,7 @@ export class Redirect extends Component{
 @connectHistory
 export class RouteStack extends Component{
   static contextTypes = {
-    routah: PropTypes.object
+    history: PropTypes.object
   };
 
   static propTypes = {
@@ -400,7 +397,7 @@ export class RouteStack extends Component{
   };
 
   render(){
-    let url = this.context.routah.history.createHref(this.props.location);
+    let url = this.context.history.createHref(this.props.location);
     return find(Children.toArray(this.props.children), c => {
       if (c.type !== Route){
         throw new Error('<RouteStack> only accepts <Route/> elements as children');
