@@ -36,7 +36,7 @@ function App(){
       location => // you can use a render callback
         <div>
           <MyApp section={location.params.id} sub={location.query.sub} />
-          {/* nest routes wherever */}
+          {/* render routes wherever */}
           <Route path='/p/special'
             component={Special} onEnter={::console.log} />
         </div>
@@ -58,7 +58,7 @@ differences from react-router
 ---
 
 - `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`passProps` props)
-- `<Route />` elements can be nested anywhere in the app
+- `<Route />` elements can be rendered anywhere in the app
 - sibling `<Route />` elements don't depend on each other (use `<RouteStack />` for similar behavior)
 - very little work has gone into this (so far)
 

@@ -155,6 +155,8 @@ export function connectHistory(Target){
           started = true;
           return;
         }
+        // sometimes (esp. when nested) - this throws saying its already unmounted
+        // must understand what's going on
         this.setState({location});
       });
     }
