@@ -139,3 +139,17 @@ This emulates a behavior from react-router - given one or more `<Routes/>`, rend
 - `children` - one or more `<Route/>` elements
 - `notFound (location)` - when no child matches. good for 404s!
 
+context.history
+---
+
+The `history` object is passed via `context` to all its descendants. Use it to trigger actions on the url -
+
+- `push` - url
+- `push` - [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
+- `replace` - url
+- `replace` - [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
+- `go(n)`
+- `goBack()`
+- `goForward()`
+- [more](https://github.com/rackt/history/blob/master/docs/GettingStarted.md)
+

@@ -21,7 +21,7 @@ const has = {}.hasOwnProperty;
 export class Router extends Component{
   static propTypes = {
     history: PropTypes.object,
-    url: PropTypes.string,  // only for server side
+    url: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),  // shortcut, only for server side
     children: React.PropTypes.element.isRequired,
   };
 
