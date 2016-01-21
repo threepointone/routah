@@ -1,4 +1,5 @@
 - handle multiple redirects on the same render tree
+- cache path regexps
 - a11y
 - test query string matching etc
 - perfffff
