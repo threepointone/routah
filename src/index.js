@@ -14,11 +14,10 @@ const HISTORY = isBrowser ? useBeforeUnload(createHistory)() : null;
 
 const has = {}.hasOwnProperty;
 
-// top level component. pass in a history object.
+// top level component. (optional) pass in a history object.
 // <Router history={history}>
 //   <App/>
 // </Router>
-// todo - use a default history singleton in browser
 export class Router extends Component{
   static propTypes = {
     history: PropTypes.object,
@@ -38,16 +37,16 @@ export class Router extends Component{
   static childContextTypes = {
     routah: PropTypes.object.isRequired
   };
-
+  // default history. on server, this is a new instance with every element
   __routah_history__ = isBrowser ? HISTORY : useBeforeUnload(createMemoryHistory)(this.props.url);
 
   getChildContext(){
     return {
       routah: {
         history:
-          (this.props::has('history') ? this.props.history : null) ||
-          (this.context.routah || {}).history
-          || this.__routah_history__
+          this.props.history ||
+          (this.context.routah || {}).history ||
+          this.__routah_history__
       }
     };
   }
@@ -216,10 +215,10 @@ export class Route extends Component{
   };
 
   // start with initial data
-  state = this.resolve(this.props.location, this.props.path);
+  state = this.compute(this.props.location, this.props.path);
 
   // return an enhanced location object
-  resolve (location, path){
+  compute (location, path){
     let doesMatch = true, match;
     if (path){
       // pull out params etc
@@ -276,25 +275,25 @@ export class Route extends Component{
 
   componentWillReceiveProps(next){
     // refresh on new location / path
-    this.setState(this.resolve(next.location, next.path));
+    this.setState(this.compute(next.location, next.path));
   }
 
   render(){
 
-    let {location} = this.state;
     let el;
+
     if (this.state.matches){
       if (this.props.component){
         // components / props flavor
-        el = React.createElement(this.props.component, {...this.props.passProps, location});
+        el = React.createElement(this.props.component, {...this.props.passProps, location: this.state.location});
       }
       else {
         // render callback
-        el = this.props.children(location);
+        el = this.props.children(this.state.location);
       }
     }
 
-    return el || this.props.notFound(location);
+    return el || this.props.notFound(this.state.location);
   }
 
   componentWillUnmount(){
