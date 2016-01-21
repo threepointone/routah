@@ -3,6 +3,12 @@
 - test query string matching etc
 - perfffff
 
+(via rr)
+- stringifyQuery
+- parseQuery
+- expose context.routah
+- expose history helpers
+
 - ✓ dynamic routing * require.ensure should just work
 - ✓ redux-simple-router * it just works!
 - ✓ activeClass / activeStyle
