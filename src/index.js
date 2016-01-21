@@ -215,8 +215,11 @@ export class Route extends Component{
     routah: PropTypes.object
   };
 
+  // start with initial data
+  state = this.resolve(this.props.location, this.props.path);
+
   // return an enhanced location object
-  resolve = (location, path) => {
+  resolve (location, path){
     let doesMatch = true, match;
     if (path){
       // pull out params etc
@@ -231,10 +234,7 @@ export class Route extends Component{
       },
       matches: doesMatch
     };
-  };
-
-  // start with initial data
-  state = this.resolve(this.props.location, this.props.path);
+  }
 
   componentDidMount(){
     let h = this.context.routah.history;
