@@ -131,7 +131,7 @@ function matches(patterns, url){
 // not really a public api, though we export it for testability
 export function connectHistory(Target){
   return class History extends Component{
-    static displayName = 'Ó:' + Target.displayName;
+    static displayName = 'Ó:' + (Target.displayName || Target.name);
 
     static contextTypes = {
       history: PropTypes.object
@@ -218,7 +218,7 @@ export class Route extends Component{
     let doesMatch = true, match;
     if (path){
       // pull out params etc
-      match = matches(path, this.context.history.createHref(location));
+      match = matches(path, this.context.history.createPath(location));
       doesMatch = !!match;
     }
 
@@ -237,14 +237,14 @@ export class Route extends Component{
     // hooks
 
     // onMount
-    if (matches(this.props.path,  h.createHref(this.state.location))){
+    if (matches(this.props.path,  h.createPath(this.state.location))){
       this.props.onMount(this.state.location);
     }
 
     // onEnter / onLeave
     this.disposeBefore = h.listenBefore((location, callback) => {
-      let matchesCurrent = matches(this.props.path,  h.createHref(this.state.location));
-      let matchesNext = matches(this.props.path,  h.createHref(location));
+      let matchesCurrent = matches(this.props.path,  h.createPath(this.state.location));
+      let matchesNext = matches(this.props.path,  h.createPath(location));
       if (!matchesCurrent && matchesNext){
         return this.props.onEnter(location, callback);
       }
@@ -262,7 +262,7 @@ export class Route extends Component{
 
     if (h.listenBeforeUnload){
       this.disposeUnload = h.listenBeforeUnload(() => {
-        if (matches(this.props.path,  h.createHref(this.state.location))){
+        if (matches(this.props.path,  h.createPath(this.state.location))){
           return this.props.onUnload(this.state.location);
         }
       });
@@ -339,7 +339,7 @@ export class Link extends Component{
   render(){
     let h = this.context.history;
     let href = h.createHref(this.props.to);
-    let active = href === h.createHref(this.props.location);
+    let active = h.createPath(this.props.to) === h.createPath(this.props.location);
 
     return <a
       href={href}
@@ -394,7 +394,7 @@ export class RouteStack extends Component{
   };
 
   render(){
-    let url = this.context.history.createHref(this.props.location);
+    let url = this.context.history.createPath(this.props.location);
     return find(Children.toArray(this.props.children), c => {
       if (c.type !== Route){
         throw new Error('<RouteStack> only accepts <Route/> elements as children');

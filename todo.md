@@ -7,9 +7,10 @@
 (via rr)
 - stringifyQuery
 - parseQuery
-- expose context.routah
+
 - expose history helpers
 
+- ✓ expose context.routah
 - ✓ dynamic routing * require.ensure should just work
 - ✓ redux-simple-router * it just works!
 - ✓ activeClass / activeStyle
