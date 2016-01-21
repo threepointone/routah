@@ -162,7 +162,6 @@ export function connectHistory(Target){
     componentWillUnmount(){
       // clean up
       this.dispose();
-      delete this.dispose;
     }
 
     render(){
@@ -296,10 +295,8 @@ export class Route extends Component{
   componentWillUnmount(){
     // cleanup
     this.disposeBefore();
-    delete this.disposeBefore;
     if (this.disposeUnload){
       this.disposeUnload();
-      delete this.disposeUnload;
     }
   }
 }
