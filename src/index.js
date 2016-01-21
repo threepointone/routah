@@ -30,7 +30,7 @@ export class Router extends Component{
   };
 
   static contextTypes = {
-    // discover if we're nested in abother <Router/> / some other provider
+    // discover if we're nested in another <Router/> / some other provider
     history: PropTypes.object
   };
 

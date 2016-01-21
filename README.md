@@ -35,7 +35,7 @@ function App(){
     <Route path={['/p/:id', 'para/:id']}>{
       location => // you can use a render callback
         <div>
-          <Page section={location.params.id} sub={location.query.sub} />
+          <MyApp section={location.params.id} sub={location.query.sub} />
           {/* nest routes wherever */}
           <Route path='/p/special'
             component={Special} onEnter={::console.log} />
