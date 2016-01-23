@@ -42,7 +42,8 @@ export class Router extends Component{
 
   getChildContext(){
     return {
-      history: this.props.history ||
+      history:
+        this.props.history ||
         this.context.history ||
         this.__history__
     };
@@ -92,9 +93,9 @@ function decodeParam(val) {
 
 
 // pattern matching for urls
-function pathMatch(pattern, path){
+function pathMatch(pattern, path, end = true){
   let keys = [], params = {}, _path,
-    regexp = pathToRegexp(pattern, keys), m = regexp.exec(path);
+    regexp = pathToRegexp(pattern, keys, {end}), m = regexp.exec(path);
   if (!m){
     return false;
   }
@@ -131,7 +132,7 @@ function matches(patterns, url){
 // not really a public api, though we export it for testability
 export function connectHistory(Target){
   return class History extends Component{
-    static displayName = 'Ó:' + (Target.displayName || Target.name);
+    static displayName = 'history:(' + (Target.displayName || Target.name) + ')';
 
     static contextTypes = {
       history: PropTypes.object
@@ -220,7 +221,7 @@ export class Route extends Component{
     let doesMatch = true, match;
     if (path){
       // pull out params etc
-      match = matches(path, this.context.history.createPath(location));
+      match = matches(path, this.context.history.createPath(location.pathname));
       doesMatch = !!match;
     }
 
@@ -239,14 +240,14 @@ export class Route extends Component{
     // hooks
 
     // onMount
-    if (matches(this.props.path,  h.createPath(this.state.location))){
+    if (matches(this.props.path,  h.createPath(this.state.location.pathname))){
       this.props.onMount(this.state.location);
     }
 
     // onEnter / onLeave
     this.disposeBefore = h.listenBefore((location, callback) => {
-      let matchesCurrent = matches(this.props.path,  h.createPath(this.state.location));
-      let matchesNext = matches(this.props.path,  h.createPath(location));
+      let matchesCurrent = matches(this.props.path,  h.createPath(this.state.location.pathname));
+      let matchesNext = matches(this.props.path,  h.createPath(location.pathname));
       if (!matchesCurrent && matchesNext){
         return this.props.onEnter(location, callback);
       }
@@ -264,7 +265,7 @@ export class Route extends Component{
 
     if (h.listenBeforeUnload){
       this.disposeUnload = h.listenBeforeUnload(() => {
-        if (matches(this.props.path,  h.createPath(this.state.location))){
+        if (matches(this.props.path,  h.createPath(this.state.location.pathname))){
           return this.props.onUnload(this.state.location);
         }
       });
@@ -274,6 +275,14 @@ export class Route extends Component{
   componentWillReceiveProps(next){
     // refresh on new location / path
     this.setState(this.compute(next.location, next.path));
+  }
+
+  componentWillUnmount(){
+    // cleanup
+    this.disposeBefore();
+    if (this.disposeUnload){
+      this.disposeUnload();
+    }
   }
 
   render(){
@@ -292,14 +301,6 @@ export class Route extends Component{
     }
 
     return el || this.props.notFound(this.state.location);
-  }
-
-  componentWillUnmount(){
-    // cleanup
-    this.disposeBefore();
-    if (this.disposeUnload){
-      this.disposeUnload();
-    }
   }
 }
 
@@ -396,7 +397,7 @@ export class RouteStack extends Component{
   };
 
   render(){
-    let url = this.context.history.createPath(this.props.location);
+    let url = this.context.history.createPath(this.props.location.pathname);
     return find(Children.toArray(this.props.children), c => {
       if (c.type !== Route){
         throw new Error('<RouteStack> only accepts <Route/> elements as children');
