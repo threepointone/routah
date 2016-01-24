@@ -203,10 +203,11 @@ describe('Route', () => {
         return <div>{this.props.location.pathname}:{this.props.x}</div>;
       }
     }
-    render(<Router history={createMemoryHistory('/babba/booey')}>
+    render(<Router history={createMemoryHistory('/babba/booey?x=1')}>
       <div>
         {/* renders with current location */}
         <Route>{ location => <div>{location.pathname}</div>}</Route>
+
 
         {/* can also pass component / passProps */}
         <Route component={Inner} passProps={{x: 'whoo'}} />
@@ -227,7 +228,7 @@ describe('Route', () => {
         }}</Route>
 
         {/* custom notFound render */}
-        <Route path='/notmatching' notFound={() => <div>notfound</div>}>{ () => <div>won't render</div> }</Route>
+        <Route path='/notmatching' notFound={() => <div>notfound</div>}>{ () => { throw new Error('won\'t render'); } }</Route>
 
         {/* can be nested */}
         <Route path='/babba/:id'>{
@@ -291,22 +292,6 @@ describe('Link', () => {
 
   });
 
-  it('prop: activeStyle activeClass', () => {
-    let h = createMemoryHistory();
-    let tree = render(<Router history={h}>
-      <Link to='/x' activeClass='gogogo' style={{zIndex: 0}} activeStyle={{zIndex: 10}}>go where?</Link>
-    </Router>, node);
-    let a = findRenderedDOMComponentWithTag(tree, 'a');
-    expect(a.pathname).toEqual('/x');
-    expect([...a.classList]).toEqual([]);
-    expect(a.style.zIndex).toEqual('0');
-    h.push('/x');
-    expect([...a.classList]).toEqual(['gogogo']);
-    expect(a.style.zIndex).toEqual('10');
-    h.push('/y');
-    expect([...a.classList]).toEqual([]);
-
-  });
 
   it('refreshes when the url changes', () => {
     // previous set

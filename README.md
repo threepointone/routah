@@ -54,13 +54,6 @@ function App(){
 ReactDOM.render(<Router><App/></Router>, document.body)
 ```
 
-differences from react-router
----
-
-- `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`passProps` props)
-- `<Route />` elements can be rendered anywhere in the app
-- sibling `<Route />` elements don't depend on each other (use `<RouteStack />` for similar behavior)
-- very little work has gone into this (so far)
 
 Router
 ---
@@ -108,8 +101,6 @@ A `<Link to={...}>` is a replacement for `<a>` elements
 - `to` - url
 - `to` - a [location descriptor](https://github.com/rackt/history/blob/master/docs/Glossary.md#locationdescriptor)
 - `onClick`, `className`, `style` - analogous to ReactDOM props
-- `activeClass` - added to className when `to` matches current url. defaults to 'active'.
-- `activeStyle` - merged to style when `to` matches current url
 
 Redirect
 ---
@@ -153,3 +144,13 @@ The `history` object is passed via `context` to all its descendants. Use it to t
 - `goForward()`
 - [more](https://github.com/rackt/history/blob/master/docs/GettingStarted.md)
 
+
+differences from react-router
+---
+
+- `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`passProps` props)
+- `<Route />` elements can be rendered anywhere in the app
+- urls don't get 'nested'
+- no activeClass/activeStyle
+- sibling `<Route />` elements don't depend on each other (use `<RouteStack />` for similar behavior)
+- no async prop/component loading

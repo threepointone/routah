@@ -1,5 +1,7 @@
+
+- comparisons should/shouldn't include querystring?
+- webpack dev flow
 - handle multiple redirects on the same render tree
-- properly 'nest' urls
 - cache path regexps
 - a11y
 - test query string matching etc
@@ -14,22 +16,20 @@
 - ~ animations between urls * use hooks/springs?
 - ~ scroll states * use rackt/scroll-behavior, after historyV2 compat
 - ~ redirects * todo: server side handling
-- ~ overwrite context.routah for a subtree * todo -  handle redirects on said tree
-- ~ .dispose() on server side - to test
 - ~ testsssss
 
 - ✓ expose context.routah
 - ✓ dynamic routing * require.ensure should just work
 - ✓ redux-simple-router * it just works!
-- ✓ activeClass / activeStyle
+
 - ✓ default browser history object
 - ✓ default node history object
 - ✓ path-to-regexp for matching
 - ✓ server side rendering
 - ✓ `<NotFound/>` via RouteStack
-- ✓ hot swap history objects?
+- ✓ overwrite context.history for a subtree
 
-
-- x async data * not a concern of this library (or fetch prop? or falcor?)
 - x `<IndexRoute />`? * not needed, just use a `<Route path='/' />`
-
+- x async data * not a concern of this library (or fetch prop? or falcor?)
+- x activeClass / activeStyle - removed - wasn't 'right'
+- x properly 'nest' urls - delegate

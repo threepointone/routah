@@ -306,7 +306,7 @@ export class Route extends Component{
 
 
 // a useful replacement for <a> elements.
-// includes clickjacking, and custom class/styling when 'active',
+// includes clickjacking
 @connectHistory
 export class Link extends Component{
   static contextTypes = {
@@ -318,19 +318,13 @@ export class Link extends Component{
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onClick: PropTypes.func,
     className: PropTypes.string,
-    style: PropTypes.object,
-    // when 'active', ie - on the same page
-    // todo - ignore certain query params when comparing
-    activeClass: PropTypes.string,
-    activeStyle: PropTypes.object
+    style: PropTypes.object
   };
 
   static defaultProps = {
     onClick: () => {},
     className: '',
-    activeClass: 'active',  // convenient
     style: {},
-    activeStyle: {}
   };
 
   onClick = e => {
@@ -342,13 +336,12 @@ export class Link extends Component{
   render(){
     let h = this.context.history;
     let href = h.createHref(this.props.to);
-    let active = h.createPath(this.props.to) === h.createPath(this.props.location);
 
     return <a
       href={href}
       {...this.props}
-      className={`${this.props.className} ${active ? this.props.activeClass : ''}`.trim()}
-      style={active ? {...this.props.style, ...this.props.activeStyle} : this.props.style}
+      className={this.props.className}
+      style={this.props.style}
       onClick={this.onClick}>
       {this.props.children}
     </a>;
