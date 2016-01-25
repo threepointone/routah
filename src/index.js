@@ -328,9 +328,11 @@ export class Link extends Component{
   };
 
   onClick = e => {
-    e.preventDefault();
     this.props.onClick(e);
-    this.context.history.push(this.props.to);
+    if (!this.props._target){
+      e.preventDefault();
+      this.context.history.push(this.props.to);
+    }
   };
 
   render(){
