@@ -1,4 +1,5 @@
-
+- properly 'nest' urls
+- examples
 - comparisons should/shouldn't include querystring?
 - webpack dev flow
 - handle multiple redirects on the same render tree
@@ -32,4 +33,3 @@
 - x `<IndexRoute />`? * not needed, just use a `<Route path='/' />`
 - x async data * not a concern of this library (or fetch prop? or falcor?)
 - x activeClass / activeStyle - removed - wasn't 'right'
-- x properly 'nest' urls - delegate

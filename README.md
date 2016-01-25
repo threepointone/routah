@@ -150,7 +150,6 @@ differences from react-router
 
 - `Route` accepts a 'children as a function' [render-callback]([render-callback](https://discuss.reactjs.org/t/children-as-a-function-render-callbacks/626)) (as an alternative to `component`/`passProps` props)
 - `<Route />` elements can be rendered anywhere in the app
-- urls don't get 'nested'
-- no activeClass/activeStyle
+- urls don't get 'nested', no activeClass/activeStyle - [issue #1](https://github.com/threepointone/routah/issues/1)
 - sibling `<Route />` elements don't depend on each other (use `<RouteStack />` for similar behavior)
-- no async prop/component loading
+- no async data/components/routes loading - consider using a lib like [AsyncProps](https://github.com/rackt/async-props), [react-resolver](http://ericclemmons.com/react-resolver/), etc
