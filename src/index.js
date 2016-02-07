@@ -265,7 +265,7 @@ export class Route extends Component{
 
     if (h.listenBeforeUnload){
       this.disposeUnload = h.listenBeforeUnload(() => {
-        if (matches(this.props.path,  h.createPath(this.state.location.pathname))){
+        if (this.props.onUnload && matches(this.props.path,  h.createPath(this.state.location.pathname))){
           return this.props.onUnload(this.state.location);
         }
       });
