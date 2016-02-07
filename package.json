@@ -1,6 +1,6 @@
 {
   "name": "routah",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "simple routing for react ",
   "main": "./lib/index.js",
   "scripts": {
