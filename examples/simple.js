@@ -4,13 +4,13 @@
 // query params
 // sidebar
 
-import React, {Component} from 'react';
-import {render} from 'react-dom';
-import {Router, Route, Link, RouteStack, Redirect} from '../src';
+import React, { Component } from 'react'
+import { render } from 'react-dom'
+import { Router, Route, Link, RouteStack, Redirect } from '../src'
 
 
-class App extends Component{
-  render(){
+class App extends Component {
+  render() {
     return <div>
       <ul>
         <li><Link to='/about'>about</Link></li>
@@ -37,8 +37,8 @@ class App extends Component{
           <Route>{() => <div>stack default</div>}</Route>
         </RouteStack>
       </div>
-    </div>;
+    </div>
   }
 }
 
-render(<Router><App/></Router>, document.getElementById('app'));
+render(<Router><App/></Router>, document.getElementById('app'))

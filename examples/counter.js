@@ -1,21 +1,21 @@
-import React, {Component} from 'react';
-import {render} from 'react-dom';
-import {Router, Route, Link} from '../src';
+import React, { Component } from 'react'
+import { render } from 'react-dom'
+import { Router, Route, Link } from '../src'
 
 const active = {
   border: '1px solid red'
-};
+}
 
-class Counter extends Component{
+class Counter extends Component {
   state = {
     count: 0
-  };
+  }
   onClick = () => {
     this.setState({
       count: this.state.count + 1
-    });
-  };
-  render(){
+    })
+  }
+  render() {
     return <div>
       <ul>
         <li><Link activeStyle={active} to='/1'>1</Link></li>
@@ -28,8 +28,8 @@ class Counter extends Component{
           you are at {location.pathname}
         </div>}
       </Route>
-    </div>;
+    </div>
   }
 }
 
-render(<Router><Counter/></Router>, document.getElementById('app'));
+render(<Router><Counter/></Router>, document.getElementById('app'))
