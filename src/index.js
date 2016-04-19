@@ -67,14 +67,6 @@ function find(arr, fn) {
 }
 
 
-// a helper to get the current location from the history object
-// (this was way more useful before the refactor)
-function currentLocation(h) {
-  let loc
-  h.listen(location => loc = location)() // don't forget to  dispose!
-  return loc
-}
-
 function decodeParam(val) {
   if (typeof val !== 'string' || val.length === 0) {
     return val
@@ -141,7 +133,7 @@ export function connectHistory(Target) {
     }
 
     state = {
-      location: currentLocation(this.context.history)  // start with the initial location
+      location: this.context.history.getCurrentLocation()  // start with the initial location
     }
 
     componentWillMount() {
@@ -151,13 +143,7 @@ export function connectHistory(Target) {
     }
 
     componentDidMount() {
-      let started = false
       this.dispose = this.context.history.listen(location => {
-        // discard first (sync) response since we already have it
-        if (!started) {
-          started = true
-          return
-        }
         // sometimes (esp. when nested) - this throws saying its already unmounted
         // must understand what's going on
         this.setState({ location })
