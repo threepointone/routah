@@ -1,7 +1,7 @@
 routah
 ---
 
-[work in progress]
+** DEPRECATED - USE REACT ROUTER v4 **
 
 `npm install routah --save`
 
